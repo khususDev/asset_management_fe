@@ -1,0 +1,11 @@
+      // Master Data Maintenance
+      {
+        path: 'type',
+        name: 'mnt_type',
+        component: () => import('@/views/Pages/Administration/Master/Maintenance/Type/Index.vue'),
+      },
+      {
+        path: 'schedule',
+        name: 'mnt_schedule',
+        component: () => import('@/views/Pages/Administration/Master/Maintenance/ScheduleType/Index.vue'),
+      },
