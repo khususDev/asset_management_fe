@@ -86,6 +86,18 @@
           </tr>
         </tbody>
       </table>
+      <div class="mt-6 flex justify-end gap-3">
+        <button @click="$emit('close')" class="px-4 py-2 border rounded">Close</button>
+
+        <button
+          v-if="request.approval_method === 'MANUAL' && request.status === 'PENDING'"
+          @click="$emit('mark-approved', request.id)"
+          class="px-4 py-2 bg-success text-white rounded"
+        >
+          Mark Approved
+        </button>
+      </div>
+
       <div v-if="request.workflow_approvals?.length" class="mt-8">
         <h4 class="text-lg font-bold mb-4">Approval Timeline</h4>
 

@@ -37,7 +37,7 @@
         <td
           class="border-r border-stroke px-4 py-5 text-black dark:text-white last:border-r-0 dark:border-strokedark"
         >
-          {{ item.department }}
+          {{ item.department_id ? item.department?.name : 'ALL (Semua Departemen)' }}
         </td>
         <td
           class="border-r border-stroke px-4 py-5 text-center font-bold text-primary last:border-r-0 dark:border-strokedark"
@@ -86,16 +86,16 @@
               Department Target
             </label>
             <select
-              v-model="form.department"
+              v-model="form.department_id"
               class="w-full rounded border border-stroke bg-transparent py-2 px-3 outline-none focus:border-primary dark:border-form-strokedark dark:bg-form-input"
             >
               <option value="ALL">ALL (Semua Departemen)</option>
-              <option v-for="dept in departmentsList" :key="dept.id" :value="dept.name">
+              <option v-for="dept in departmentsList" :key="dept.id" :value="dept.id">
                 {{ dept.name }}
               </option>
             </select>
-            <span v-if="errors?.department" class="text-sm text-danger mt-1">{{
-              errors.department[0]
+            <span v-if="errors?.department_id" class="text-sm text-danger mt-1">{{
+              errors.department_id[0]
             }}</span>
           </div>
         </div>
@@ -281,7 +281,7 @@ const fetchDepartments = async () => {
 
 const defaultForm = {
   module: '',
-  department: 'ALL',
+  department_id: 'null',
   is_active: true,
   levels: [{ user_id: '', min_amount: 0 }],
 }

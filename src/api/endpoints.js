@@ -43,6 +43,7 @@ export const API_ENDPOINTS = {
   optPurchaseRequest: '/opt_purchase_request',
   optPurchaseRequest_masters: '/opt_purchase_request_masters',
   optAssetRequest: '/opt_asset_request',
+  optPurchaseOrder: '/opt_purchase_order',
 
   mediaUpload: '/media/upload',
   databaseBackup: '/database/backup',

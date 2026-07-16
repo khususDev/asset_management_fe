@@ -155,6 +155,7 @@
       :show="showDetailModal"
       :request="selectedRequest"
       @close="showDetailModal = false"
+      @mark-approved="markApproved"
     />
   </div>
 </template>
@@ -281,6 +282,30 @@ const printPR = async (id) => {
   } catch (error) {
     showToast('danger', 'Gagal memproses cetak dokumen. Pastikan Anda masih login.')
     console.error(error)
+  }
+}
+
+const markApproved = async (id) => {
+  try {
+    const token = localStorage.getItem('token')
+
+    const response = await axios.post(
+      `${apiUrl}/${id}/mark-approved`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    )
+
+    showToast('success', response.data.message)
+
+    showDetailModal.value = false
+
+    fetchRequests()
+  } catch (error) {
+    showToast('danger', error.response?.data?.message || 'Gagal approve.')
   }
 }
 
