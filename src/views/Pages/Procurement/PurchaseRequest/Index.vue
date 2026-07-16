@@ -4,27 +4,41 @@
       v-if="toast.show"
       class="fixed top-5 right-5 z-99999 flex w-full max-w-sm rounded-lg border bg-white p-4 shadow-xl dark:bg-boxdark"
       :class="
-        toast.type === 'success' ? 'border-success bg-success/5' : 'border-danger bg-danger/5'
+        toast.type === 'success'
+          ? 'border-success bg-success/5'
+          : 'border-danger bg-danger/5'
       "
     >
       <div
         class="mr-3 flex h-5 w-5 items-center justify-center rounded-full text-white"
         :class="toast.type === 'success' ? 'bg-success' : 'bg-danger'"
       >
-        <span class="text-xs font-bold">{{ toast.type === 'success' ? '✓' : '✕' }}</span>
+        <span class="text-xs font-bold">{{
+          toast.type === "success" ? "✓" : "✕"
+        }}</span>
       </div>
       <div>
         <h5 class="font-semibold text-black dark:text-white text-sm">
-          {{ toast.type === 'success' ? 'Sukses' : 'Gagal' }}
+          {{ toast.type === "success" ? "Sukses" : "Gagal" }}
         </h5>
         <p class="text-xs text-gray-500 mt-0.5">{{ toast.message }}</p>
       </div>
     </div>
 
-    <Breadcrumb pageTitle="Purchase Request" :crumbs="['Operations', 'Asset Operations']" />
+    <Breadcrumb
+      pageTitle="Purchase Request"
+      :crumbs="['Operations', 'Asset Operations']"
+    />
 
     <DataTable
-      :headers="['PR Number', 'Created', 'Department', 'Est. Amount', 'Status', 'Action']"
+      :headers="[
+        'PR Number',
+        'Created',
+        'Department',
+        'Est. Amount',
+        'Status',
+        'Action',
+      ]"
       :from="requestsData.from"
       :to="requestsData.to"
       :total="requestsData.total"
@@ -58,7 +72,7 @@
         <td
           class="border-r border-stroke px-4 py-5 text-center text-black dark:text-white last:border-r-0 dark:border-strokedark"
         >
-          {{ item.user?.name || 'Unknown' }}
+          {{ item.user?.name || "Unknown" }}
         </td>
         <td
           class="border-r border-stroke px-4 py-5 text-center text-black dark:text-white last:border-r-0 dark:border-strokedark"
@@ -95,7 +109,12 @@
               class="text-gray-500 hover:text-primary/70"
               title="View Detail"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -115,7 +134,12 @@
               class="text-gray-500 hover:text-primary transition-colors"
               title="Cetak PDF Form Excel"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -127,7 +151,12 @@
 
             <TableAction
               v-if="item.status === 'PENDING'"
-              @edit="$router.push({ name: 'opt_purchase_request.edit', params: { id: item.id } })"
+              @edit="
+                $router.push({
+                  name: 'opt_purchase_request.edit',
+                  params: { id: item.id },
+                })
+              "
               @delete="openDeleteModal(item.id)"
             />
             <span v-else class="text-xs text-gray-400 italic">Locked</span>
@@ -136,7 +165,9 @@
       </tr>
 
       <TableEmpty
-        v-if="!isFetching && (!requestsData.data || requestsData.data.length === 0)"
+        v-if="
+          !isFetching && (!requestsData.data || requestsData.data.length === 0)
+        "
         :colspan="6"
       />
 
@@ -161,133 +192,144 @@
 </template>
 
 <script setup>
-import { API_BASE_URL, API_ENDPOINTS } from '@/api/endpoints'
+import { API_BASE_URL, API_ENDPOINTS } from "@/api/endpoints";
 
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import axios from 'axios'
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import axios from "axios";
 
-import Breadcrumb from '@/Components/Page/Breadcrumb.vue'
-import DataTable from '@/Components/Table/DataTable.vue'
-import Pagination from '@/Components/Table/Pagination.vue'
-import TableAction from '@/Components/Table/TableAction.vue'
-import TableEmpty from '@/Components/Table/TableEmpty.vue'
-import TableLoading from '@/Components/Table/TableLoading.vue'
-import ConfirmModal from '@/Components/Modal/ConfirmModal.vue'
-import useTable from '@/Composables/useTable'
-import DetailModal from './DetailModal.vue'
+import Breadcrumb from "@/Components/Page/Breadcrumb.vue";
+import DataTable from "@/Components/Table/DataTable.vue";
+import Pagination from "@/Components/Table/Pagination.vue";
+import TableAction from "@/Components/Table/TableAction.vue";
+import TableEmpty from "@/Components/Table/TableEmpty.vue";
+import TableLoading from "@/Components/Table/TableLoading.vue";
+import ConfirmModal from "@/Components/Modal/ConfirmModal.vue";
+import useTable from "@/Composables/useTable";
+import DetailModal from "./DetailModal.vue";
 
-const router = useRouter()
-const requestsData = ref({})
-const isFetching = ref(false)
-const apiUrl = API_ENDPOINTS.optPurchaseRequest
-const showDetailModal = ref(false)
-const detailData = ref(null)
-const selectedRequest = ref(null)
+const router = useRouter();
+const requestsData = ref({});
+const isFetching = ref(false);
+const apiUrl = API_ENDPOINTS.optPurchaseRequest;
+const showDetailModal = ref(false);
+const detailData = ref(null);
+const selectedRequest = ref(null);
 
 // State Modal Delete Kustom
-const showDeleteModal = ref(false)
-const selectedIdForDelete = ref(null)
+const showDeleteModal = ref(false);
+const selectedIdForDelete = ref(null);
 
 // State Toast Kustom
-const toast = ref({ show: false, type: 'success', message: '' })
+const toast = ref({ show: false, type: "success", message: "" });
 const showToast = (type, message) => {
-  toast.value = { show: true, type, message }
+  toast.value = { show: true, type, message };
   setTimeout(() => {
-    toast.value.show = false
-  }, 4000)
-}
+    toast.value.show = false;
+  }, 4000);
+};
 
-const { search, entries } = useTable({ search: '', entries: 10 }, () => fetchRequests())
+const { search, entries } = useTable({ search: "", entries: 10 }, () =>
+  fetchRequests(),
+);
 
 const formatCurrency = (value) => {
-  if (!value || value == 0) return 'Rp 0'
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
+  if (!value || value == 0) return "Rp 0";
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
     minimumFractionDigits: 0,
-  }).format(value)
-}
+  }).format(value);
+};
 
 const openDetailModal = async (id) => {
   try {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem("token");
 
     const response = await axios.get(`${apiUrl}/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    })
+    });
 
-    selectedRequest.value = response.data.data
-    showDetailModal.value = true
+    selectedRequest.value = response.data.data;
+    showDetailModal.value = true;
   } catch (error) {
-    showToast('danger', 'Gagal mengambil detail.')
+    showToast("danger", "Gagal mengambil detail.");
   }
-}
+};
 
 const fetchRequests = async (url = apiUrl) => {
-  isFetching.value = true
+  isFetching.value = true;
   try {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem("token");
     const response = await axios.get(url, {
       params: { search: search.value, entries: entries.value },
       headers: { Authorization: `Bearer ${token}` },
-    })
-    requestsData.value = response.data.data
+    });
+    requestsData.value = response.data.data;
   } catch (error) {
-    showToast('danger', 'Gagal memuat data dari server.')
+    showToast("danger", "Gagal memuat data dari server.");
   } finally {
-    isFetching.value = false
+    isFetching.value = false;
   }
-}
+};
 
 // Buka modal hapus kustom
 const openDeleteModal = (id) => {
-  selectedIdForDelete.value = id
-  showDeleteModal.value = true
-}
+  selectedIdForDelete.value = id;
+  showDeleteModal.value = true;
+};
 
 // Eksekusi hapus kustom setelah konfirmasi
 const handleDelete = async () => {
-  showDeleteModal.value = false
+  showDeleteModal.value = false;
   try {
-    const token = localStorage.getItem('token')
-    const response = await axios.delete(`${apiUrl}/${selectedIdForDelete.value}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    showToast('success', response.data.message || 'Data berhasil dihapus.')
-    fetchRequests()
+    const token = localStorage.getItem("token");
+    const response = await axios.delete(
+      `${apiUrl}/${selectedIdForDelete.value}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
+    showToast("success", response.data.message || "Data berhasil dihapus.");
+    fetchRequests();
   } catch (error) {
-    showToast('danger', error.response?.data?.message || 'Gagal menghapus data.')
+    showToast(
+      "danger",
+      error.response?.data?.message || "Gagal menghapus data.",
+    );
   }
-}
+};
 
 // Buka link Cetak PDF di tab baru
 const printPR = async (id) => {
   try {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem("token");
 
     // 1. Ambil data HTML mentah dari backend dengan menyertakan token auth
     const response = await axios.get(`${apiUrl}/${id}/print`, {
       headers: { Authorization: `Bearer ${token}` },
-    })
+    });
 
     // 2. Buka tab baru kosong
-    const printWindow = window.open('', '_blank')
+    const printWindow = window.open("", "_blank");
 
     // 3. Tulis isi HTML yang didapat dari backend ke tab baru tersebut
-    printWindow.document.write(response.data)
-    printWindow.document.close()
+    printWindow.document.write(response.data);
+    printWindow.document.close();
   } catch (error) {
-    showToast('danger', 'Gagal memproses cetak dokumen. Pastikan Anda masih login.')
-    console.error(error)
+    showToast(
+      "danger",
+      "Gagal memproses cetak dokumen. Pastikan Anda masih login.",
+    );
+    console.error(error);
   }
-}
+};
 
 const markApproved = async (id) => {
   try {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem("token");
 
     const response = await axios.post(
       `${apiUrl}/${id}/mark-approved`,
@@ -297,17 +339,17 @@ const markApproved = async (id) => {
           Authorization: `Bearer ${token}`,
         },
       },
-    )
+    );
 
-    showToast('success', response.data.message)
+    showToast("success", response.data.message);
 
-    showDetailModal.value = false
+    showDetailModal.value = false;
 
-    fetchRequests()
+    fetchRequests();
   } catch (error) {
-    showToast('danger', error.response?.data?.message || 'Gagal approve.')
+    showToast("danger", error.response?.data?.message || "Gagal approve.");
   }
-}
+};
 
-onMounted(() => fetchRequests())
+onMounted(() => fetchRequests());
 </script>
