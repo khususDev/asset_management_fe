@@ -22,7 +22,7 @@
           <div class="text-xs text-gray-500">PO Date</div>
 
           <div class="font-semibold">
-            {{ formatDate(purchaseOrder.po_date) }}
+            {{ formatDate(purchaseOrder.order_date) }}
           </div>
         </div>
 
