@@ -200,11 +200,20 @@ const routes = [
         name: 'opt_transfer_request',
         component: () => import('@/views/Pages/Procurement/TransferRequest/Index.vue'),
       },
-
       {
-        path: 'receiving',
-        name: 'opt_receiving',
-        component: () => import('@/views/Pages/Procurement/Receiving/Index.vue'),
+        path: 'goods_receipt',
+        name: 'opt_goods_receipt',
+        component: () => import('@/views/Pages/Procurement/GoodsReceipt/Index.vue'),
+      },
+      {
+        path: 'goods_receipt/create',
+        name: 'opt_goods_receipt.create',
+        component: () => import('@/views/Pages/Procurement/GoodsReceipt/Create.vue'),
+      },
+      {
+        path: 'goods_receipt/edit/:id',
+        name: 'opt_goods_receipt.edit',
+        component: () => import('@/views/Pages/Procurement/GoodsReceipt/Edit.vue'),
       },
 
       // Asset Operations

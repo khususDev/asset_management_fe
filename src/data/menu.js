@@ -196,8 +196,8 @@ export const menuData = [
             submenus: [],
           },
           {
-            label: 'Receiving',
-            routeName: 'opt_receiving',
+            label: 'Goods Receipt',
+            routeName: 'opt_goods_receipt',
             roles: ['superadmin', 'admin', 'user'],
             submenus: [],
           },
