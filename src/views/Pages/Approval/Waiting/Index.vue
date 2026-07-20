@@ -2,124 +2,92 @@
   <div class="mx-auto max-w-screen-2xl relative">
     <Breadcrumb pageTitle="Approval Dokumen" :crumbs="['Approval', 'Inbox']" />
 
-    <DataTable
-      :headers="['No Document', 'Modul', 'Created', 'Department', 'Date', 'Action']"
-      :from="inboxData.from"
-      :to="inboxData.to"
-      :total="inboxData.total"
-      :search="search"
-      :entries="entries"
-      @search="search = $event"
-      @update:entries="entries = $event"
-    >
+    <DataTable :headers="['No Document', 'Modul', 'Created', 'Department', 'Date', 'Status', 'Action']"
+      :from="inboxData.from" :to="inboxData.to" :total="inboxData.total" :search="search" :entries="entries"
+      @search="search = $event" @update:entries="entries = $event">
       <TableLoading v-if="isFetching" :rows="5" :cols="6" />
 
-      <tr
-        v-else
-        v-for="item in inboxData.data"
-        :key="item.id"
-        class="border-b border-stroke dark:border-strokedark hover:bg-gray-50 dark:hover:bg-meta-4"
-      >
+      <tr v-else v-for="item in inboxData.data" :key="item.id"
+        class="border-b border-stroke dark:border-strokedark hover:bg-gray-50 dark:hover:bg-meta-4">
         <td
-          class="border-r border-stroke px-4 py-5 text-center font-bold text-primary dark:text-white dark:border-strokedark"
-        >
+          class="border-r border-stroke px-4 py-5 text-center font-bold text-primary dark:text-white dark:border-strokedark">
           {{ item.approvable?.request_number || 'N/A' }}
         </td>
 
-        <td
-          class="border-r border-stroke px-4 py-5 text-center text-black dark:text-white dark:border-strokedark"
-        >
+        <td class="border-r border-stroke px-4 py-5 text-center text-black dark:text-white dark:border-strokedark">
           <span
-            class="inline-block rounded bg-blue-100 text-blue-800 px-2.5 py-0.5 text-xs font-semibold dark:bg-blue-900 dark:text-blue-200"
-          >
+            class="inline-block rounded bg-blue-100 text-blue-800 px-2.5 py-0.5 text-xs font-semibold dark:bg-blue-900 dark:text-blue-200">
             {{ item.approvable_type?.split('\\').pop() }}
           </span>
         </td>
 
-        <td
-          class="border-r border-stroke px-4 py-5 text-center text-black dark:text-white dark:border-strokedark"
-        >
+        <td class="border-r border-stroke px-4 py-5 text-center text-black dark:text-white dark:border-strokedark">
           {{ item.approvable?.user?.name || 'Unknown' }}
         </td>
 
-        <td
-          class="border-r border-stroke px-4 py-5 text-center text-black dark:text-white dark:border-strokedark"
-        >
-          {{ item.approvable?.department || '-' }}
+        <td class="border-r border-stroke px-4 py-5 text-center text-black dark:text-white dark:border-strokedark">
+          {{ item.approvable?.department?.code || '-' }}
         </td>
 
         <td
-          class="border-r border-stroke px-4 py-5 text-center text-gray-600 dark:text-gray-400 dark:border-strokedark"
-        >
+          class="border-r border-stroke px-4 py-5 text-center text-gray-600 dark:text-gray-400 dark:border-strokedark">
           {{ formatDate(item.created_at) }}
         </td>
 
+        <td class="border-r border-stroke px-4 py-5 text-center text-black dark:text-white dark:border-strokedark">
+          <span class="inline-block rounded px-2.5 py-0.5 text-xs font-semibold" :class="{
+            'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': item.status === 'PENDING',
+            'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': item.status === 'APPROVED',
+            'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200': item.status === 'REJECTED',
+            'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200': item.status === 'MANUAL'
+          }">
+            {{ item.status }}
+          </span>
+        </td>
+
+
         <td class="px-4 py-5 text-center">
           <div class="flex items-center justify-center gap-3">
-            <button
-              @click="openDetailModal(item.approvable)"
-              class="text-gray-500 hover:text-primary transition-colors"
-              title="Lihat Detail Pengajuan"
-            >
+            <button @click="openDetailModal(item.approvable)" class="text-gray-500 hover:text-primary transition-colors"
+              title="Lihat Detail Pengajuan">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
               </svg>
             </button>
 
-            <button
-              @click="openActionModal(item, 'APPROVE')"
-              class="rounded bg-success py-1.5 px-3 text-xs font-medium text-white hover:bg-opacity-90 shadow"
-            >
+            <button @click="openActionModal(item, 'APPROVE')"
+              class="rounded bg-success py-1.5 px-3 text-xs font-medium text-white hover:bg-opacity-90 shadow">
               ✓ Approve
             </button>
-            <button
-              @click="openActionModal(item, 'REJECT')"
-              class="rounded bg-danger py-1.5 px-3 text-xs font-medium text-white hover:bg-opacity-90 shadow"
-            >
+            <button @click="openActionModal(item, 'REJECT')"
+              class="rounded bg-danger py-1.5 px-3 text-xs font-medium text-white hover:bg-opacity-90 shadow">
               ✕ Reject
             </button>
           </div>
         </td>
       </tr>
 
-      <TableEmpty
-        v-if="!isFetching && (!inboxData.data || inboxData.data.length === 0)"
-        :colspan="6"
-      />
+      <TableEmpty v-if="!isFetching && (!inboxData.data || inboxData.data.length === 0)" :colspan="6" />
 
       <template #pagination>
         <Pagination :links="inboxData.links" @change-page="fetchInbox" />
       </template>
     </DataTable>
 
-    <div
-      v-if="modal.show"
-      class="fixed inset-0 z-99999 flex items-center justify-center bg-black/50 p-4"
-    >
+    <div v-if="modal.show" class="fixed inset-0 z-99999 flex items-center justify-center bg-black/50 p-4">
       <div
-        class="w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-boxdark border border-stroke dark:border-strokedark"
-      >
+        class="w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-boxdark border border-stroke dark:border-strokedark">
         <h3 class="text-lg font-bold text-black dark:text-white mb-2">
           {{ modal.type === 'APPROVE' ? 'Setujui Dokumen' : 'Tolak Dokumen' }}
         </h3>
 
         <div
-          class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded text-xs text-blue-800 dark:bg-blue-900/20 dark:border-blue-900/50 dark:text-blue-300"
-        >
+          class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded text-xs text-blue-800 dark:bg-blue-900/20 dark:border-blue-900/50 dark:text-blue-300">
           Tindakan Anda akan memproses <span class="font-bold">Level {{ modal.level }}</span> untuk
-          jabatan <span class="font-bold uppercase">{{ modal.roleName }}</span
-          >.
+          jabatan <span class="font-bold uppercase">{{ modal.roleName }}</span>.
         </div>
 
         <p class="text-sm text-gray-500 mb-4">
@@ -131,35 +99,24 @@
           <label class="mb-2 block text-sm font-medium text-black dark:text-white">
             Catatan / Alasan {{ modal.type === 'REJECT' ? '*' : '(Opsional)' }}
           </label>
-          <textarea
-            v-model="modal.note"
-            rows="3"
-            :placeholder="
-              modal.type === 'REJECT'
-                ? 'Wajib mengisi alasan penolakan...'
-                : 'Tambahkan catatan jika diperlukan...'
+          <textarea v-model="modal.note" rows="3" :placeholder="modal.type === 'REJECT'
+            ? 'Wajib mengisi alasan penolakan...'
+            : 'Tambahkan catatan jika diperlukan...'
             "
-            class="w-full rounded border-[1.5px] border-stroke bg-transparent py-2 px-3 text-sm outline-none focus:border-primary dark:border-form-strokedark dark:bg-form-input"
-          ></textarea>
+            class="w-full rounded border-[1.5px] border-stroke bg-transparent py-2 px-3 text-sm outline-none focus:border-primary dark:border-form-strokedark dark:bg-form-input"></textarea>
         </div>
 
         <div class="flex justify-end gap-3">
-          <button
-            @click="modal.show = false"
-            class="rounded border border-stroke px-4 py-2 text-sm font-medium text-black hover:bg-gray-100 dark:border-strokedark dark:text-white dark:hover:bg-meta-4"
-          >
+          <button @click="modal.show = false"
+            class="rounded border border-stroke px-4 py-2 text-sm font-medium text-black hover:bg-gray-100 dark:border-strokedark dark:text-white dark:hover:bg-meta-4">
             Batal
           </button>
-          <button
-            @click="executeAction"
-            :disabled="modal.loading || (modal.type === 'REJECT' && !modal.note.trim())"
+          <button @click="executeAction" :disabled="modal.loading || (modal.type === 'REJECT' && !modal.note.trim())"
             class="rounded px-4 py-2 text-sm font-medium text-white shadow-md transition-all disabled:opacity-50"
-            :class="
-              modal.type === 'APPROVE'
-                ? 'bg-success hover:bg-opacity-90'
-                : 'bg-danger hover:bg-opacity-90'
-            "
-          >
+            :class="modal.type === 'APPROVE'
+              ? 'bg-success hover:bg-opacity-90'
+              : 'bg-danger hover:bg-opacity-90'
+              ">
             {{
               modal.loading
                 ? 'Memproses...'
@@ -172,52 +129,39 @@
       </div>
     </div>
 
-    <div
-      v-if="detailModal.show"
-      class="fixed inset-0 z-99999 flex items-center justify-center bg-black/50 p-4"
-    >
+    <div v-if="detailModal.show" class="fixed inset-0 z-99999 flex items-center justify-center bg-black/50 p-4">
       <div
-        class="w-full max-w-4xl rounded-lg bg-white p-6 shadow-xl dark:bg-boxdark border border-stroke dark:border-strokedark max-h-[95vh] overflow-y-auto"
-      >
-        <div
-          class="flex justify-between items-center mb-4 border-b border-stroke pb-2 dark:border-strokedark"
-        >
+        class="w-full max-w-4xl rounded-lg bg-white p-6 shadow-xl dark:bg-boxdark border border-stroke dark:border-strokedark max-h-[95vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-4 border-b border-stroke pb-2 dark:border-strokedark">
           <h3 class="text-xl font-bold text-black dark:text-white">
             Detail Item Pengajuan:
             <span class="text-primary">{{ detailModal.data?.request_number }}</span>
           </h3>
-          <button
-            @click="detailModal.show = false"
-            class="text-gray-500 hover:text-danger text-xl font-bold transition-colors"
-          >
+          <button @click="detailModal.show = false"
+            class="text-gray-500 hover:text-danger text-xl font-bold transition-colors">
             ✕
           </button>
         </div>
 
         <div
-          class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5 p-4 bg-gray-50 dark:bg-meta-4 rounded-lg border border-stroke dark:border-strokedark"
-        >
+          class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5 p-4 bg-gray-50 dark:bg-meta-4 rounded-lg border border-stroke dark:border-strokedark">
           <div>
-            <span class="text-xs text-gray-500 font-medium uppercase tracking-wider block mb-0.5"
-              >Department / Pengaju:</span
-            >
+            <span class="text-xs text-gray-500 font-medium uppercase tracking-wider block mb-0.5">Department /
+              Pengaju:</span>
             <span class="text-sm font-bold text-black dark:text-white">
               {{ detailModal.data?.department }} / {{ detailModal.data?.user?.name || 'Unknown' }}
             </span>
           </div>
           <div>
-            <span class="text-xs text-gray-500 font-medium uppercase tracking-wider block mb-0.5"
-              >General Purpose / Alasan:</span
-            >
+            <span class="text-xs text-gray-500 font-medium uppercase tracking-wider block mb-0.5">General Purpose /
+              Alasan:</span>
             <span class="text-sm font-medium text-black dark:text-white block whitespace-pre-line">
               {{ detailModal.data?.purpose || '-' }}
             </span>
           </div>
         </div>
 
-        <div
-          class="overflow-x-auto border rounded border-stroke dark:border-strokedark shadow-sm mb-6"
-        >
+        <div class="overflow-x-auto border rounded border-stroke dark:border-strokedark shadow-sm mb-6">
           <table class="w-full border-collapse text-left text-sm text-gray-500 dark:text-gray-400">
             <thead class="bg-gray-100 dark:bg-meta-4 text-black dark:text-white font-semibold">
               <tr class="border-b border-stroke dark:border-strokedark">
@@ -230,11 +174,8 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-stroke dark:divide-strokedark text-black dark:text-white">
-              <tr
-                v-for="(subItem, index) in detailModal.data?.items"
-                :key="subItem.id"
-                class="hover:bg-gray-50 dark:hover:bg-meta-4/40"
-              >
+              <tr v-for="(subItem, index) in detailModal.data?.items" :key="subItem.id"
+                class="hover:bg-gray-50 dark:hover:bg-meta-4/40">
                 <td class="px-4 py-3 text-center font-medium">{{ index + 1 }}</td>
                 <td class="px-4 py-3">
                   <div class="font-bold text-black dark:text-white">
@@ -258,15 +199,11 @@
                 </td>
               </tr>
               <tr class="bg-gray-100 dark:bg-meta-4 font-bold text-black dark:text-white">
-                <td
-                  colspan="5"
-                  class="px-4 py-4 text-right uppercase tracking-wider text-xs font-semibold"
-                >
+                <td colspan="5" class="px-4 py-4 text-right uppercase tracking-wider text-xs font-semibold">
                   Total Estimasi Anggaran:
                 </td>
                 <td
-                  class="px-4 py-4 text-right text-primary dark:text-meta-3 text-base font-extrabold border-t border-stroke dark:border-strokedark"
-                >
+                  class="px-4 py-4 text-right text-primary dark:text-meta-3 text-base font-extrabold border-t border-stroke dark:border-strokedark">
                   {{ formatCurrency(detailModal.data?.total_estimated_amount) }}
                 </td>
               </tr>
@@ -274,26 +211,18 @@
           </table>
         </div>
 
-        <div
-          class="border-t border-stroke pt-5 dark:border-strokedark bg-gray-50/50 dark:bg-meta-4/10 p-5 rounded-lg"
-        >
+        <div class="border-t border-stroke pt-5 dark:border-strokedark bg-gray-50/50 dark:bg-meta-4/10 p-5 rounded-lg">
           <h4
-            class="text-xs font-bold text-black dark:text-white mb-6 uppercase tracking-wider text-center sm:text-left"
-          >
+            class="text-xs font-bold text-black dark:text-white mb-6 uppercase tracking-wider text-center sm:text-left">
             📋 Alur & Status Persetujuan (Workflow Tracking)
           </h4>
 
           <div class="relative w-full px-4 py-2">
-            <div
-              class="absolute top-2.5 left-8 right-8 h-0.5 bg-gray-200 dark:bg-strokedark z-0"
-            ></div>
+            <div class="absolute top-2.5 left-8 right-8 h-0.5 bg-gray-200 dark:bg-strokedark z-0"></div>
 
             <div class="flex flex-row justify-between items-start w-full relative z-10">
-              <div
-                v-for="wfl in detailModal.data?.workflow_approvals"
-                :key="wfl.id"
-                class="flex flex-col items-center flex-1 relative text-center px-1"
-              >
+              <div v-for="wfl in detailModal.data?.workflow_approvals" :key="wfl.id"
+                class="flex flex-col items-center flex-1 relative text-center px-1">
                 <span
                   class="flex h-5 w-5 items-center justify-center rounded-full border-2 mb-3 bg-white dark:bg-boxdark mx-auto shadow-sm transition-all duration-300"
                   :class="{
@@ -305,37 +234,24 @@
                     'border-gray-300 text-gray-300 dark:border-form-strokedark':
                       wfl.status === 'PENDING' &&
                       !isCurrentQueue(wfl, detailModal.data?.workflow_approvals),
-                  }"
-                >
+                  }">
                   <span v-if="wfl.status === 'APPROVED'" class="text-[10px] font-bold">✓</span>
                   <span v-else-if="wfl.status === 'REJECTED'" class="text-[10px] font-bold">✕</span>
                 </span>
 
-                <span
-                  class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest block mb-0.5"
-                >
+                <span class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest block mb-0.5">
                   Level {{ wfl.level }}
                 </span>
 
                 <span class="font-extrabold text-sm block leading-tight px-1 min-h-[20px]">
-                  <span
-                    v-if="wfl.status === 'APPROVED'"
-                    class="text-success"
-                    :title="wfl.approver?.name"
-                  >
+                  <span v-if="wfl.status === 'APPROVED'" class="text-success" :title="wfl.approver?.name">
                     {{ wfl.approver?.name }}
                   </span>
-                  <span
-                    v-else-if="wfl.status === 'REJECTED'"
-                    class="text-danger"
-                    :title="wfl.approver?.name"
-                  >
+                  <span v-else-if="wfl.status === 'REJECTED'" class="text-danger" :title="wfl.approver?.name">
                     {{ wfl.approver?.name }}
                   </span>
-                  <span
-                    v-else-if="isCurrentQueue(wfl, detailModal.data?.workflow_approvals)"
-                    class="text-warning text-xs font-bold italic animate-pulse"
-                  >
+                  <span v-else-if="isCurrentQueue(wfl, detailModal.data?.workflow_approvals)"
+                    class="text-warning text-xs font-bold italic animate-pulse">
                     ⏳ Waiting...
                   </span>
                   <span v-else class="text-gray-300 dark:text-gray-600 text-xs font-normal italic">
@@ -343,20 +259,16 @@
                   </span>
                 </span>
 
-                <span
-                  class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide block mt-1"
-                >
+                <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide block mt-1">
                   {{ wfl.role?.name || 'Approver' }}
                 </span>
 
                 <span v-if="wfl.action_date" class="text-[9px] text-gray-400 mt-1 block">
                   {{ formatDate(wfl.action_date).split(',')[0] }}
                 </span>
-                <div
-                  v-if="wfl.note"
+                <div v-if="wfl.note"
                   class="mt-1 text-[10px] bg-white dark:bg-form-input py-0.5 px-1.5 rounded text-gray-500 max-w-[120px] truncate italic border border-stroke dark:border-strokedark"
-                  :title="wfl.note"
-                >
+                  :title="wfl.note">
                   "{{ wfl.note }}"
                 </div>
               </div>

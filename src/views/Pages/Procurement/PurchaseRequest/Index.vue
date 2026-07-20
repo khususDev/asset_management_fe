@@ -1,18 +1,13 @@
 <template>
   <div class="mx-auto max-w-screen-2xl relative">
-    <div
-      v-if="toast.show"
+    <div v-if="toast.show"
       class="fixed top-5 right-5 z-99999 flex w-full max-w-sm rounded-lg border bg-white p-4 shadow-xl dark:bg-boxdark"
-      :class="
-        toast.type === 'success'
-          ? 'border-success bg-success/5'
-          : 'border-danger bg-danger/5'
-      "
-    >
-      <div
-        class="mr-3 flex h-5 w-5 items-center justify-center rounded-full text-white"
-        :class="toast.type === 'success' ? 'bg-success' : 'bg-danger'"
-      >
+      :class="toast.type === 'success'
+        ? 'border-success bg-success/5'
+        : 'border-danger bg-danger/5'
+        ">
+      <div class="mr-3 flex h-5 w-5 items-center justify-center rounded-full text-white"
+        :class="toast.type === 'success' ? 'bg-success' : 'bg-danger'">
         <span class="text-xs font-bold">{{
           toast.type === "success" ? "✓" : "✕"
         }}</span>
@@ -25,174 +20,113 @@
       </div>
     </div>
 
-    <Breadcrumb
-      pageTitle="Purchase Request"
-      :crumbs="['Operations', 'Asset Operations']"
-    />
+    <Breadcrumb pageTitle="Purchase Request" :crumbs="['Operations', 'Asset Operations']" />
 
-    <DataTable
-      :headers="[
-        'PR Number',
-        'Created',
-        'Department',
-        'Est. Amount',
-        'Status',
-        'Action',
-      ]"
-      :from="requestsData.from"
-      :to="requestsData.to"
-      :total="requestsData.total"
-      :search="search"
-      :entries="entries"
-      @search="search = $event"
-      @update:entries="entries = $event"
-    >
+    <DataTable :headers="[
+      'PR Number',
+      'Created',
+      'Department',
+      'Est. Amount',
+      'Status',
+      'Action',
+    ]" :from="requestsData.from" :to="requestsData.to" :total="requestsData.total" :search="search" :entries="entries"
+      @search="search = $event" @update:entries="entries = $event">
       <template #top-actions>
-        <button
-          @click="$router.push({ name: 'opt_purchase_request.create' })"
-          class="rounded bg-primary py-2 px-4 text-sm font-medium text-white hover:bg-opacity-90 shadow-md"
-        >
+        <button @click="$router.push({ name: 'opt_purchase_request.create' })"
+          class="rounded bg-primary py-2 px-4 text-sm font-medium text-white hover:bg-opacity-90 shadow-md">
           Create New Request
         </button>
       </template>
 
       <TableLoading v-if="isFetching" :rows="5" :cols="6" />
 
-      <tr
-        v-else
-        v-for="item in requestsData.data"
-        :key="item.id"
-        class="border-b border-stroke dark:border-strokedark hover:bg-gray-50 dark:hover:bg-meta-4"
-      >
+      <tr v-else v-for="item in requestsData.data" :key="item.id"
+        class="border-b border-stroke dark:border-strokedark hover:bg-gray-50 dark:hover:bg-meta-4">
         <td
-          class="border-r border-stroke px-4 py-5 text-center font-bold text-primary dark:text-white last:border-r-0 dark:border-strokedark"
-        >
+          class="border-r border-stroke px-4 py-5 text-center font-bold text-primary dark:text-white last:border-r-0 dark:border-strokedark">
           {{ item.request_number }}
         </td>
         <td
-          class="border-r border-stroke px-4 py-5 text-center text-black dark:text-white last:border-r-0 dark:border-strokedark"
-        >
+          class="border-r border-stroke px-4 py-5 text-center text-black dark:text-white last:border-r-0 dark:border-strokedark">
           {{ item.user?.name || "Unknown" }}
         </td>
         <td
-          class="border-r border-stroke px-4 py-5 text-center text-black dark:text-white last:border-r-0 dark:border-strokedark"
-        >
+          class="border-r border-stroke px-4 py-5 text-center text-black dark:text-white last:border-r-0 dark:border-strokedark">
           {{ item.department?.name }}
         </td>
         <td
-          class="border-r border-stroke px-4 py-5 text-right font-medium text-meta-3 last:border-r-0 dark:border-strokedark"
-        >
+          class="border-r border-stroke px-4 py-5 text-right font-medium text-meta-3 last:border-r-0 dark:border-strokedark">
           {{ formatCurrency(item.total_estimated_amount) }}
         </td>
-        <td
-          class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark"
-        >
-          <span
-            class="inline-block rounded px-2.5 py-0.5 text-sm font-medium"
-            :class="{
-              'bg-warning/20 text-warning': item.status === 'PENDING',
-              'bg-warning/20 text-primary': item.status === 'PARTIAL_APPROVED',
-              'bg-success/20 text-success': item.status === 'APPROVED',
-              'bg-danger/20 text-danger': item.status === 'REJECTED',
-              'bg-primary/20 text-primary': item.status === 'PO_CREATED',
-            }"
-          >
+        <td class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark">
+          <span class="inline-block rounded px-2.5 py-0.5 text-sm font-medium" :class="{
+            'bg-warning/20 text-warning': item.status === 'PENDING',
+            'bg-warning/20 text-primary': item.status === 'PARTIAL_APPROVED',
+            'bg-success/20 text-success': item.status === 'APPROVED',
+            'bg-danger/20 text-danger': item.status === 'REJECTED',
+            'bg-primary/20 text-primary': item.status === 'PO_CREATED',
+          }">
             {{ item.status }}
           </span>
         </td>
-        <td
-          class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark"
-        >
+        <td class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark">
           <div class="flex items-center justify-center gap-3">
-            <button
-              @click="openDetailModal(item.id)"
-              class="text-gray-500 hover:text-primary/70"
-              title="View Detail"
-            >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                ></path>
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                ></path>
-              </svg>
-            </button>
-            <button
-              @click="printPR(item.id)"
-              class="text-gray-500 hover:text-primary transition-colors"
-              title="Cetak PDF Form Excel"
-            >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-3a2 2 0 00-2-2H9a2 2 0 00-2 2v3a2 2 0 002 2zm5-17V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3"
-                ></path>
+            <!-- Tombol View Detail -->
+            <button @click="openDetailModal(item.id)" class="text-gray-500 hover:text-primary/70" title="View Detail">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z">
+                </path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                </path>
               </svg>
             </button>
 
-            <TableAction
-              v-if="item.status === 'PENDING'"
-              @edit="
-                $router.push({
-                  name: 'opt_purchase_request.edit',
-                  params: { id: item.id },
-                })
-              "
-              @delete="openDeleteModal(item.id)"
-            />
+            <!-- Tombol Print -->
+            <button @click="printPR(item.id)" class="text-gray-500 hover:text-primary transition-colors"
+              title="Cetak PDF Form Excel">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-3a2 2 0 00-2-2H9a2 2 0 00-2 2v3a2 2 0 002 2zm5-17V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3">
+                </path>
+              </svg>
+            </button>
+            <TableAction v-if="item.status === 'PENDING'" @edit="
+              $router.push({
+                name: 'opt_purchase_request.edit',
+                params: { id: item.id },
+              })
+              " @delete="openDeleteModal(item.id)" />
+
+            <span v-else-if="item.status === 'REJECTED'"
+              class="text-xs text-red-500 font-semibold bg-red-50 dark:bg-red-950/30 px-2 py-1 rounded">
+              Cancelled
+            </span>
+
             <span v-else class="text-xs text-gray-400 italic">Locked</span>
           </div>
         </td>
       </tr>
 
-      <TableEmpty
-        v-if="
-          !isFetching && (!requestsData.data || requestsData.data.length === 0)
-        "
-        :colspan="6"
-      />
+      <TableEmpty v-if="
+        !isFetching && (!requestsData.data || requestsData.data.length === 0)
+      " :colspan="6" />
 
       <template #pagination>
         <Pagination :links="requestsData.links" @change-page="fetchRequests" />
       </template>
     </DataTable>
 
-    <ConfirmModal
-      :show="showDeleteModal"
-      @close="showDeleteModal = false"
-      @confirm="handleDelete"
-    />
+    <ConfirmModal :show="showDeleteModal" @close="showDeleteModal = false" @confirm="handleDelete" />
 
-    <DetailModal
-      :show="showDetailModal"
-      :request="selectedRequest"
-      @close="showDetailModal = false"
-      @mark-approved="markApproved"
-    />
+    <DetailModal :show="showDetailModal" :request="selectedRequest" @close="showDetailModal = false"
+      @mark-approved="markApproved" />
   </div>
 </template>
 
 <script setup>
-import { API_BASE_URL, API_ENDPOINTS } from "@/api/endpoints";
+import { API_ENDPOINTS } from "@/api/endpoints";
 
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
@@ -213,7 +147,6 @@ const requestsData = ref({});
 const isFetching = ref(false);
 const apiUrl = API_ENDPOINTS.optPurchaseRequest;
 const showDetailModal = ref(false);
-const detailData = ref(null);
 const selectedRequest = ref(null);
 
 // State Modal Delete Kustom
