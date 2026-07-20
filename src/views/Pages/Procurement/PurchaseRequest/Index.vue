@@ -1,4 +1,8 @@
 <template>
+  <!-- Top Loading Bar -->
+  <div class="fixed top-0 left-0 h-1 bg-primary z-[99999] transition-all duration-300 ease-out"
+    :class="isGlobalLoading ? 'w-full' : 'w-0'"></div>
+
   <div class="mx-auto max-w-screen-2xl relative">
     <div v-if="toast.show"
       class="fixed top-5 right-5 z-99999 flex w-full max-w-sm rounded-lg border bg-white p-4 shadow-xl dark:bg-boxdark"
@@ -70,42 +74,21 @@
           </span>
         </td>
         <td class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark">
-          <div class="flex items-center justify-center gap-3">
-            <!-- Tombol View Detail -->
-            <button @click="openDetailModal(item.id)" class="text-gray-500 hover:text-primary/70" title="View Detail">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z">
-                </path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
-                </path>
-              </svg>
-            </button>
-
-            <!-- Tombol Print -->
-            <button @click="printPR(item.id)" class="text-gray-500 hover:text-primary transition-colors"
-              title="Cetak PDF Form Excel">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-3a2 2 0 00-2-2H9a2 2 0 00-2 2v3a2 2 0 002 2zm5-17V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3">
-                </path>
-              </svg>
-            </button>
-            <TableAction v-if="item.status === 'PENDING'" @edit="
-              $router.push({
-                name: 'opt_purchase_request.edit',
-                params: { id: item.id },
-              })
-              " @delete="openDeleteModal(item.id)" />
-
-            <span v-else-if="item.status === 'REJECTED'"
-              class="text-xs text-red-500 font-semibold bg-red-50 dark:bg-red-950/30 px-2 py-1 rounded">
-              Cancelled
-            </span>
-
-            <span v-else class="text-xs text-gray-400 italic">Locked</span>
+          <!-- Cek status untuk menampilkan teks status atau TableAction -->
+          <div v-if="item.status === 'REJECTED'"
+            class="text-xs text-red-500 font-semibold bg-red-50 dark:bg-red-950/30 px-2 py-1 rounded">
+            Cancelled
           </div>
+
+          <div v-else-if="item.status !== 'PENDING' && item.status !== 'PARTIAL_APPROVED' && item.status !== 'APPROVED'"
+            class="text-xs text-gray-400 italic">
+            Locked
+          </div>
+
+          <TableAction v-else :disabled="isGlobalLoading" :show-edit-delete="item.status === 'PENDING'"
+            @view="openDetailModal(item.id)" @print="printPR(item.id)"
+            @edit="$router.push({ name: 'opt_purchase_request.edit', params: { id: item.id } })"
+            @delete="openDeleteModal(item.id)" />
         </td>
       </tr>
 
@@ -141,6 +124,8 @@ import TableLoading from "@/Components/Table/TableLoading.vue";
 import ConfirmModal from "@/Components/Modal/ConfirmModal.vue";
 import useTable from "@/Composables/useTable";
 import DetailModal from "./DetailModal.vue";
+// Tambahkan ini di bagian deklarasi ref
+const isGlobalLoading = ref(false);
 
 const router = useRouter();
 const requestsData = ref({});
@@ -176,6 +161,7 @@ const formatCurrency = (value) => {
 };
 
 const openDetailModal = async (id) => {
+  isGlobalLoading.value = true; // Aktifkan loading bar
   try {
     const token = localStorage.getItem("token");
 
@@ -189,6 +175,8 @@ const openDetailModal = async (id) => {
     showDetailModal.value = true;
   } catch (error) {
     showToast("danger", "Gagal mengambil detail.");
+  } finally {
+    isGlobalLoading.value = false; // Aktifkan loading bar
   }
 };
 
@@ -216,6 +204,7 @@ const openDeleteModal = (id) => {
 
 // Eksekusi hapus kustom setelah konfirmasi
 const handleDelete = async () => {
+  isGlobalLoading.value = true; // Aktifkan loading bar
   showDeleteModal.value = false;
   try {
     const token = localStorage.getItem("token");
@@ -232,11 +221,14 @@ const handleDelete = async () => {
       "danger",
       error.response?.data?.message || "Gagal menghapus data.",
     );
+  } finally {
+    isGlobalLoading.value = false; // Aktifkan loading bar
   }
 };
 
 // Buka link Cetak PDF di tab baru
 const printPR = async (id) => {
+  isGlobalLoading.value = true; // Aktifkan loading bar
   try {
     const token = localStorage.getItem("token");
 
@@ -257,10 +249,13 @@ const printPR = async (id) => {
       "Gagal memproses cetak dokumen. Pastikan Anda masih login.",
     );
     console.error(error);
+  } finally {
+    isGlobalLoading.value = false; // Aktifkan loading bar
   }
 };
 
 const markApproved = async (id) => {
+  isGlobalLoading.value = true; // Aktifkan loading bar
   try {
     const token = localStorage.getItem("token");
 
@@ -281,6 +276,8 @@ const markApproved = async (id) => {
     fetchRequests();
   } catch (error) {
     showToast("danger", error.response?.data?.message || "Gagal approve.");
+  } finally {
+    isGlobalLoading.value = false; // Aktifkan loading bar
   }
 };
 

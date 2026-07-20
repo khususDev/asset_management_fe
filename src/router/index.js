@@ -191,9 +191,9 @@ const routes = [
         component: () => import('@/views/Pages/Procurement/PurchaseOrder/Index.vue'),
       },
       {
-        path: 'purchase_order/edit/:id',
-        name: 'opt_purchase_order.edit',
-        component: () => import('@/views/Pages/Procurement/PurchaseOrder/Edit.vue'),
+        path: 'purchase_order/create',
+        name: 'opt_purchase_order.create',
+        component: () => import('@/views/Pages/Procurement/PurchaseOrder/Create.vue'),
       },
       {
         path: 'transfer_request',

@@ -18,7 +18,7 @@
         <div>
           <div class="text-xs text-gray-500">Department</div>
           <div class="font-semibold">
-            {{ request.department?.name }}
+            {{ request.department.name }}
           </div>
         </div>
 
@@ -89,11 +89,8 @@
       <div class="mt-6 flex justify-end gap-3">
         <button @click="$emit('close')" class="px-4 py-2 border rounded">Close</button>
 
-        <button
-          v-if="request.approval_method === 'MANUAL' && request.status === 'PENDING'"
-          @click="$emit('mark-approved', request.id)"
-          class="px-4 py-2 bg-success text-white rounded"
-        >
+        <button v-if="request.approval_method === 'MANUAL' && request.status === 'PENDING'"
+          @click="$emit('mark-approved', request.id)" class="px-4 py-2 bg-success text-white rounded">
           Mark Approved
         </button>
       </div>
@@ -101,11 +98,7 @@
       <div v-if="request.workflow_approvals?.length" class="mt-8">
         <h4 class="text-lg font-bold mb-4">Approval Timeline</h4>
 
-        <div
-          v-for="approval in request.workflow_approvals"
-          :key="approval.id"
-          class="border rounded-lg p-4 mb-3"
-        >
+        <div v-for="approval in request.workflow_approvals" :key="approval.id" class="border rounded-lg p-4 mb-3">
           <div class="flex justify-between items-start">
             <div>
               <div class="font-semibold">Level {{ approval.level }}</div>
@@ -123,16 +116,13 @@
               </div>
             </div>
 
-            <span
-              class="px-3 py-1 rounded text-xs font-semibold"
-              :class="{
-                'bg-success/20 text-success': approval.status === 'APPROVED',
+            <span class="px-3 py-1 rounded text-xs font-semibold" :class="{
+              'bg-success/20 text-success': approval.status === 'APPROVED',
 
-                'bg-danger/20 text-danger': approval.status === 'REJECTED',
+              'bg-danger/20 text-danger': approval.status === 'REJECTED',
 
-                'bg-warning/20 text-warning': approval.status === 'PENDING',
-              }"
-            >
+              'bg-warning/20 text-warning': approval.status === 'PENDING',
+            }">
               {{ approval.status }}
             </span>
           </div>

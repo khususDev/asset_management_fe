@@ -185,18 +185,22 @@
                 </div>
                 <div>
                   <label class="mb-1 block text-sm font-medium text-black dark:text-white">Delivery Address</label>
-                  <select v-model="item.delivery_branch_id"
+                  <select :value="item.delivery_branch_id"
+                    @change="item.delivery_branch_id = Number($event.target.value)"
                     class="w-full rounded border-[1.5px] border-stroke bg-transparent py-2 px-3 text-sm dark:bg-form-input">
                     <option value="" disabled>Pilih Lokasi</option>
-                    <option v-for="branch in masters.branchs" :value="branch.id">
+                    <!-- Tambahkan :key agar Vue lebih stabil saat merender data -->
+                    <option v-for="branch in masters.branchs" :key="branch.id" :value="branch.id">
                       {{ branch.code }} - {{ branch.name }}
                     </option>
                   </select>
                 </div>
+
                 <div>
-                  <label class="mb-1 block text-sm font-medium text-black dark:text-white">Est Kedatangan</label>
-                  <input type="date" v-model="item.expected_arrival_date"
-                    class="w-full rounded border-[1.5px] border-stroke bg-transparent py-2 px-3 text-sm dark:bg-form-input" />
+                  <label class="mb-1 block text-sm font-medium text-black dark:text-white">
+                    Est Kedatangan
+                  </label>
+                  <DateInput v-model="item.expected_arrival_date" />
                 </div>
               </div>
 
@@ -209,7 +213,7 @@
                   <span class="text-xs text-gray-500 block">Subtotal Item</span>
                   <span class="text-lg font-bold text-meta-3">{{
                     formatCurrency(item.quantity * item.unit_price)
-                    }}</span>
+                  }}</span>
                 </div>
               </div>
             </div>
@@ -232,7 +236,7 @@
             <span class="font-bold text-sm text-black dark:text-white uppercase tracking-wider">Grand Total:</span>
             <span class="text-2xl font-bold text-primary ml-auto">{{
               formatCurrency(grandTotal)
-              }}</span>
+            }}</span>
           </div>
         </div>
       </div>
@@ -242,12 +246,11 @@
 
 <script setup>
 import { API_ENDPOINTS } from '@/api/endpoints'
-
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-// 🔥 AUDIT TIPOGRAFI: Ubah 'ajax' kembali ke nama package asli yang valid yaitu 'axios'
 import axios from 'axios'
 import Breadcrumb from '@/Components/Page/Breadcrumb.vue'
+import DateInput from '@/components/Form/DateInput.vue'
 
 const router = useRouter()
 const route = useRoute()
