@@ -370,48 +370,30 @@
                             <label class="mb-3 block font-medium">
                                 Receipt Status
                             </label>
-
                             <div class="space-y-3">
-
                                 <label class="flex items-center gap-3">
-
                                     <input type="radio" value="PARTIAL" v-model="form.receipt_status">
-
                                     Partial Receipt
-
                                 </label>
-
                                 <label class="flex items-center gap-3">
-
                                     <input type="radio" value="COMPLETE" v-model="form.receipt_status">
-
                                     Complete Receipt
-
                                 </label>
 
                             </div>
-
                         </div>
-
                     </div>
 
                     <div class="flex justify-end gap-3 border-t p-5">
-
                         <button type="button" @click="$router.back()" class="rounded border border-stroke px-6 py-2">
                             Cancel
                         </button>
-
                         <ButtonLoading text="Save Goods Receipt" loadingText="Saving Goods Receipt..."
                             :loading="loading" @click="save" class="rounded bg-primary px-6 py-2 text-white" />
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
 </template>
