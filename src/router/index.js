@@ -218,9 +218,14 @@ const routes = [
 
       // Asset Operations
       {
-        path: 'Registry',
+        path: '/asset-registration',
         name: 'opt_asset_registration',
-        component: () => import('@/views/Pages/Operation/Registry/Index.vue'),
+        component: () => import('@/views/Pages/Operation/AssetManagement/Registration/Index.vue'),
+      },
+      {
+        path: '/asset-registration/:id/register',
+        name: 'opt_asset_registration.create',
+        component: () => import('@/views/Pages/Operation/AssetManagement/Registration/Create.vue'),
       },
       {
         path: 'assignment',

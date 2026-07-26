@@ -205,44 +205,6 @@ export const menuData = [
       },
     ],
   },
-  // ---------------- WORKFLOW ----------------
-  {
-    groupName: 'Workflow',
-    menus: [
-      {
-        label: 'Approvals',
-        routeName: null,
-        roles: ['superadmin', 'admin', 'user', 'it manager', 'director', 'finance manager'],
-        icon: 'approval',
-        submenus: [
-          {
-            label: 'Waiting Approval',
-            routeName: 'apl_inbox_waiting',
-            roles: ['superadmin', 'admin', 'user', 'it manager', 'director', 'finance manager'],
-            submenus: [],
-          },
-          {
-            label: 'My Submission',
-            routeName: 'apl_inbox_submission',
-            roles: ['superadmin', 'admin', 'user', 'manager', 'director'],
-            submenus: [],
-          },
-          {
-            label: 'Approval Logs',
-            routeName: 'apl_inbox_history',
-            roles: ['superadmin', 'admin', 'user', 'manager', 'director'],
-            submenus: [],
-          },
-          {
-            label: 'Approval Settings',
-            routeName: 'apl_approval_setting',
-            roles: ['superadmin', 'admin', 'director', 'manager'],
-            submenus: [],
-          },
-        ],
-      },
-    ],
-  },
   {
     groupName: 'Asset Management',
     menus: [
@@ -253,7 +215,7 @@ export const menuData = [
         roles: ['superadmin', 'admin', 'director', 'manager'],
         submenus: [
           {
-            label: 'Registry',
+            label: 'Registration',
             routeName: 'opt_asset_registration',
             roles: ['superadmin', 'admin', 'director', 'manager'],
             submenus: [],
@@ -417,6 +379,45 @@ export const menuData = [
       //     },
       //   ],
       // },
+    ],
+  },
+
+  // ---------------- WORKFLOW ----------------
+  {
+    groupName: 'Workflow',
+    menus: [
+      {
+        label: 'Approvals',
+        routeName: null,
+        roles: ['superadmin', 'admin', 'user', 'it manager', 'director', 'finance manager'],
+        icon: 'approval',
+        submenus: [
+          {
+            label: 'Waiting Approval',
+            routeName: 'apl_inbox_waiting',
+            roles: ['superadmin', 'admin', 'user', 'it manager', 'director', 'finance manager'],
+            submenus: [],
+          },
+          {
+            label: 'My Submission',
+            routeName: 'apl_inbox_submission',
+            roles: ['superadmin', 'admin', 'user', 'manager', 'director'],
+            submenus: [],
+          },
+          {
+            label: 'Approval Logs',
+            routeName: 'apl_inbox_history',
+            roles: ['superadmin', 'admin', 'user', 'manager', 'director'],
+            submenus: [],
+          },
+          {
+            label: 'Approval Settings',
+            routeName: 'apl_approval_setting',
+            roles: ['superadmin', 'admin', 'director', 'manager'],
+            submenus: [],
+          },
+        ],
+      },
     ],
   },
 
