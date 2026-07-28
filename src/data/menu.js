@@ -222,7 +222,7 @@ export const menuData = [
           },
           {
             label: 'Assets',
-            routeName: 'opt_asset',
+            routeName: 'opt_asset_directory',
             roles: ['superadmin', 'admin', 'director', 'manager'],
             submenus: [],
           },
@@ -281,23 +281,10 @@ export const menuData = [
       // ---------------- MAINTENANCE ----------------
       {
         label: 'Maintenance',
-        routeName: null,
+        routeName: 'maintenance',
         roles: ['superadmin', 'admin', 'user'],
-        icon: 'product',
-        submenus: [
-          {
-            label: 'Record',
-            routeName: 'maintenance_record',
-            roles: ['superadmin', 'admin', 'director', 'manager'],
-            submenus: [],
-          },
-          {
-            label: 'History',
-            routeName: 'maintenance_history',
-            roles: ['superadmin', 'admin', 'director', 'manager'],
-            submenus: [],
-          },
-        ],
+        icon: 'analytics',
+        submenus: [],
       },
       // ---------------- INVENTORY ----------------
       {

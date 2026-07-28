@@ -170,7 +170,7 @@ const masterOptions = ref({
 
 const form = ref({
   serial_number: '',
-
+  asset_class: '',
   asset_category_id: '',
   asset_type_id: '',
 
@@ -219,6 +219,8 @@ const fetchAsset = async () => {
     asset.value = response.data.data
 
     form.value = {
+      asset_class: asset.value.asset.class ?? '',
+
       serial_number: asset.value.asset.serial_number ?? '',
 
       asset_category_id: asset.value.registration.category_id ?? '',

@@ -228,9 +228,9 @@ const routes = [
         component: () => import('@/views/Pages/Operation/AssetManagement/Registration/Create.vue'),
       },
       {
-        path: 'assets',
-        name: 'opt_asset',
-        component: () => import('@/views/Pages/Operation/Assignment/Index.vue'),
+        path: 'assets-directory',
+        name: 'opt_asset_directory',
+        component: () => import('@/views/Pages/Operation/AssetDirectory/Index.vue'),
       },
       {
         path: 'assignment',
@@ -294,14 +294,9 @@ const routes = [
 
       // Maintenance
       {
-        path: 'maintenance-record',
-        name: 'maintenance_record',
-        component: () => import('@/views/Pages/Maintenance/WorkOrder/Index.vue'), // Sesuaikan dengan lokasi file Anda
-      },
-      {
-        path: 'maintenance-history',
-        name: 'maintenance_history',
-        component: () => import('@/views/Pages/Maintenance/History/Index.vue'), // Sesuaikan dengan lokasi file Anda
+        path: 'maintenance',
+        name: 'maintenance',
+        component: () => import('@/views/Pages/Maintenance/Index.vue'), // Sesuaikan dengan lokasi file Anda
       },
 
       // Inventory
