@@ -20,6 +20,7 @@
           <input
             v-model="model.serial_number"
             type="text"
+            format="UPPERCASE"
             class="w-full rounded border border-stroke px-4 py-2.5"
             placeholder="Input Serial Number"
           />
@@ -84,10 +85,6 @@
       </div>
     </div>
 
-    <!-- ===================================================== -->
-    <!-- BRAND -->
-    <!-- ===================================================== -->
-
     <div
       class="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
     >
@@ -125,10 +122,6 @@
         </div>
       </div>
     </div>
-
-    <!-- ===================================================== -->
-    <!-- WARRANTY -->
-    <!-- ===================================================== -->
 
     <div
       class="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"

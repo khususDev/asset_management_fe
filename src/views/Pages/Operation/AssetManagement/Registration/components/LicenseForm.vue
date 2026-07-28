@@ -25,6 +25,7 @@
           <textarea
             rows="3"
             v-model="model.serial_number"
+            format="UPPERCASE"
             class="w-full rounded border border-stroke px-4 py-3"
             placeholder="XXXXX-XXXXX-XXXXX-XXXXX"
           >
@@ -150,7 +151,7 @@
           <select v-model="model.branch_id" class="w-full rounded border border-stroke px-4 py-2.5">
             <option value="">-- Select Branch --</option>
 
-            <option v-for="item in masters.branches" :key="item.id" :value="item.id">
+            <option v-for="item in masters.branchs" :key="item.id" :value="item.id">
               {{ item.code }} - {{ item.name }}
             </option>
           </select>

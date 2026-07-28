@@ -434,12 +434,10 @@ import DateInput from '@/components/Form/DateInput.vue'
 const router = useRouter()
 const loading = ref(false)
 
-// 🔥 BARU: State loading horizontal & skeleton khusus halaman Create
 const isDataFetching = ref(true)
 
 const masters = ref({ uoms: [], vendors: [], payments: [], branchs: [], departments: [] })
 
-// 🔥 BARU: Setel inisialisasi awal formulir kosong saat tambah PR baru
 const form = ref({ department_id: '', approval_method: 'SYSTEM', purpose: '', items: [] })
 
 const toast = ref({ show: false, type: 'success', message: '' })

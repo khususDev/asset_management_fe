@@ -1,16 +1,18 @@
 <template>
   <div class="space-y-6">
-    <div
-      class="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
-    >
-      <div class="border-b border-stroke px-6 py-4">
-        <h3 class="text-lg font-semibold text-black dark:text-white">Consumable Information</h3>
+    <!-- ===================================================== -->
+    <!-- CONSUMABLE INFORMATION -->
+    <!-- ===================================================== -->
 
-        <p class="mt-1 text-sm text-gray-500">Lengkapi informasi dasar barang consumable.</p>
+    <div class="rounded-lg border border-stroke bg-white shadow-default">
+      <div class="border-b border-stroke px-6 py-4">
+        <h3 class="text-lg font-semibold">Consumable Information</h3>
+
+        <p class="mt-1 text-sm text-gray-500">Lengkapi informasi barang consumable.</p>
       </div>
 
       <div class="grid grid-cols-1 gap-6 p-6 md:grid-cols-2">
-        <!-- Asset Category -->
+        <!-- Category -->
 
         <div>
           <label class="mb-2 block text-sm font-medium">
@@ -30,7 +32,7 @@
           </select>
         </div>
 
-        <!-- Asset Type -->
+        <!-- Type -->
 
         <div>
           <label class="mb-2 block text-sm font-medium">
@@ -46,6 +48,40 @@
 
             <option v-for="item in filteredTypes" :key="item.id" :value="item.id">
               {{ item.code }} - {{ item.name }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Brand -->
+
+        <div>
+          <label class="mb-2 block text-sm font-medium">
+            Brand
+            <span class="text-danger">*</span>
+          </label>
+
+          <select v-model="model.brand_id" class="w-full rounded border border-stroke px-4 py-2.5">
+            <option value="">-- Select Brand --</option>
+
+            <option v-for="item in masters.brands" :key="item.id" :value="item.id">
+              {{ item.name }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Model -->
+
+        <div>
+          <label class="mb-2 block text-sm font-medium">
+            Model
+            <span class="text-danger">*</span>
+          </label>
+
+          <select v-model="model.model_id" class="w-full rounded border border-stroke px-4 py-2.5">
+            <option value="">-- Select Model --</option>
+
+            <option v-for="item in filteredModels" :key="item.id" :value="item.id">
+              {{ item.name }}
             </option>
           </select>
         </div>
@@ -84,7 +120,7 @@
           </select>
         </div>
 
-        <!-- Location -->
+        <!-- Storage -->
 
         <div class="md:col-span-2">
           <label class="mb-2 block text-sm font-medium">
@@ -104,6 +140,20 @@
           </select>
         </div>
 
+        <!-- Warranty -->
+
+        <div>
+          <label class="mb-2 block text-sm font-medium"> Warranty Start </label>
+
+          <DateInput v-model="model.warranty_start" />
+        </div>
+
+        <div>
+          <label class="mb-2 block text-sm font-medium"> Warranty End </label>
+
+          <DateInput v-model="model.warranty_end" />
+        </div>
+
         <!-- Remark -->
 
         <div class="md:col-span-2">
@@ -113,20 +163,16 @@
             rows="4"
             v-model="model.remarks"
             class="w-full rounded border border-stroke px-4 py-3"
-            placeholder="Additional information..."
-          >
-          </textarea>
+          />
         </div>
       </div>
     </div>
 
-    <!-- ===================================================== -->
-    <!-- INFORMATION -->
-    <!-- ===================================================== -->
+    <!-- INFO -->
 
-    <!-- <div class="rounded-lg border border-warning bg-warning/5 p-5">
+    <div class="rounded-lg border border-warning bg-warning/5 p-5">
       <div class="flex gap-3">
-        <div class="mt-0.5">
+        <div>
           <svg class="h-5 w-5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
@@ -136,22 +182,28 @@
             />
           </svg>
         </div>
+
+        <div>
+          <h4 class="font-semibold text-warning">Consumable Item</h4>
+
+          <p class="text-sm text-gray-600 mt-1">
+            Consumable tidak memiliki Serial Number namun tetap dapat memiliki Brand, Model dan
+            Warranty sesuai jenis barang.
+          </p>
+        </div>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import DateInput from '@/components/Form/DateInput.vue'
 
 const model = defineModel()
 
 const props = defineProps({
-  masters: {
-    type: Object,
-
-    required: true,
-  },
+  masters: Object,
 })
 
 const filteredTypes = computed(() => {
@@ -160,5 +212,11 @@ const filteredTypes = computed(() => {
   return props.masters.types.filter(
     (item) => item.asset_category_id == model.value.asset_category_id,
   )
+})
+
+const filteredModels = computed(() => {
+  if (!model.value.brand_id) return []
+
+  return props.masters.models.filter((item) => item.brand_id == model.value.brand_id)
 })
 </script>

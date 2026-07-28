@@ -282,7 +282,7 @@ const submitRegistration = async () => {
   try {
     const token = localStorage.getItem('token')
 
-    const response = await axios.put(`/opt_asset_registration/${assetId}/register`, form.value, {
+    const response = await axios.put(`/opt_asset_registration/${assetId}`, form.value, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -292,7 +292,7 @@ const submitRegistration = async () => {
 
     setTimeout(() => {
       router.push({
-        name: 'opt_asset_registration.index',
+        name: 'opt_asset_registration',
       })
     }, 1200)
   } catch (error) {

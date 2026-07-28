@@ -221,6 +221,12 @@ export const menuData = [
             submenus: [],
           },
           {
+            label: 'Assets',
+            routeName: 'opt_asset',
+            roles: ['superadmin', 'admin', 'director', 'manager'],
+            submenus: [],
+          },
+          {
             label: 'Assignment',
             routeName: 'opt_asset_assignment',
             roles: ['superadmin', 'admin', 'director', 'manager'],

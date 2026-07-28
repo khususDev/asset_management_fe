@@ -228,6 +228,11 @@ const routes = [
         component: () => import('@/views/Pages/Operation/AssetManagement/Registration/Create.vue'),
       },
       {
+        path: 'assets',
+        name: 'opt_asset',
+        component: () => import('@/views/Pages/Operation/Assignment/Index.vue'),
+      },
+      {
         path: 'assignment',
         name: 'opt_asset_assignment',
         component: () => import('@/views/Pages/Operation/Assignment/Index.vue'),
