@@ -20,7 +20,7 @@
           <input
             v-model="model.serial_number"
             type="text"
-            format="UPPERCASE"
+            @input="model.serial_number = model.serial_number.toUpperCase()"
             class="w-full rounded border border-stroke px-4 py-2.5"
             placeholder="Input Serial Number"
           />
@@ -77,7 +77,7 @@
           <select v-model="model.branch_id" class="w-full rounded border border-stroke px-4 py-2.5">
             <option value="">-- Select Branch --</option>
 
-            <option v-for="item in masters.branches" :key="item.id" :value="item.id">
+            <option v-for="item in masters.branchs" :key="item.id" :value="item.id">
               {{ item.code }} - {{ item.name }}
             </option>
           </select>
@@ -144,14 +144,18 @@
         </div>
 
         <div>
-          <label class="mb-2 block text-sm font-medium"> Useful Life (Year) </label>
+          <label class="mb-2 block text-sm font-medium">
+            Asset Status
+            <span class="text-danger">*</span>
+          </label>
 
-          <input
-            type="number"
-            min="0"
-            v-model="model.useful_life"
-            class="w-full rounded border border-stroke px-4 py-2.5"
-          />
+          <select v-model="model.status_id" class="w-full rounded border border-stroke px-4 py-2.5">
+            <option value="">-- Select Status --</option>
+
+            <option v-for="item in masters.statuses" :key="item.id" :value="item.id">
+              {{ item.name }}
+            </option>
+          </select>
         </div>
       </div>
     </div>

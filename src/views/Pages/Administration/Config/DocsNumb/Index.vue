@@ -70,7 +70,11 @@
         <td
           class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark"
         >
-          <TableAction @edit="openEdit(doc)" @delete="openDelete(doc.id)" />
+          <TableAction
+            :show-edit-delete="true"
+            @edit="handleEdit(doc)"
+            @delete="openDelete(doc.id)"
+          />
         </td>
       </tr>
 
@@ -251,7 +255,7 @@
 </template>
 
 <script setup>
-import { API_BASE_URL, API_ENDPOINTS } from '@/api/endpoints'
+import { API_ENDPOINTS } from '@/api/endpoints'
 
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
@@ -297,25 +301,12 @@ const fetchNumberings = async (url = apiUrl) => {
 const apiDept = API_ENDPOINTS.orgDepartment
 const fetchDepartments = async () => {
   try {
-    // Hapus params jika API Anda tidak membutuhkannya
     const response = await axios.get(apiDept)
-
-    // Log ini untuk memastikan data masuk dengan benar ke console browser
     const rawData = response.data.data.data || response.data.data
-    console.log('Data departemen:', rawData)
-
-    // Pastikan struktur response.data.data adalah array [ {id: ..., name: ...}, ... ]
     departments.value = rawData
   } catch (error) {
     console.error('Gagal mengambil data departemen', error)
-  } finally {
-    isFetching.value = false
   }
-}
-
-const getDepartmentName = (deptId) => {
-  const dept = departments.value.find((d) => d.id === deptId)
-  return dept ? dept.name : 'Tidak Ditemukan'
 }
 
 const {
@@ -334,10 +325,11 @@ const {
   confirmDelete,
 } = useCrud({
   initialForm: {
+    id: null,
     module: '',
     department: '',
     name: '',
-    format: '', // Format awal dibuat kosong agar admin bisa merakit
+    format: '',
     prefix: '',
     digit_length: 4,
     reset_type: 'YEARLY',
@@ -348,9 +340,25 @@ const {
   deleteRoute: apiUrl,
 })
 
+// --- HELPER UNTUK EDIT DATA ---
+const handleEdit = (doc) => {
+  // Ambil ID/Kode department jika berbentuk Object relasi dari Eloquent
+  const departmentValue =
+    typeof doc.department === 'object' && doc.department !== null
+      ? doc.department.id || doc.department.code || ''
+      : doc.department
+
+  // Buat payload bersih dengan ID dan format department yang tepat
+  const payload = {
+    ...doc,
+    department: departmentValue,
+  }
+
+  openEdit(payload)
+}
+
 // --- LOGIKA HELPER BUILDER ---
 const insertTag = (tag) => {
-  // Gunakan form.value (atau deteksi otomatis jika pakai reactive)
   const target = form.value !== undefined ? form.value : form
 
   if (!target.format) {
