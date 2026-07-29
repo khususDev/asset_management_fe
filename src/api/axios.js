@@ -3,6 +3,7 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { API_BASE_URL } from '@/api/endpoints'
 
+axios.defaults.withCredentials = true
 axios.defaults.baseURL = API_BASE_URL
 axios.defaults.headers.common.Accept = 'application/json'
 

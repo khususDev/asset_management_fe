@@ -48,6 +48,7 @@ export const API_ENDPOINTS = {
   optGoodsReceipt: '/opt_goods_receipt',
   assetRegistration: '/opt_asset_registration',
   assetRegistrationMasters: '/opt_asset-registration/masters',
+  optAssetDirectory: 'opt_asset_directory',
 
   mediaUpload: '/media/upload',
   databaseBackup: '/database/backup',

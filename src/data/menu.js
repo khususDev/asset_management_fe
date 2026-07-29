@@ -221,7 +221,7 @@ export const menuData = [
             submenus: [],
           },
           {
-            label: 'Assets',
+            label: 'Assets Directory',
             routeName: 'opt_asset_directory',
             roles: ['superadmin', 'admin', 'director', 'manager'],
             submenus: [],

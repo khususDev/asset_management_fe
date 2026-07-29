@@ -230,7 +230,7 @@ const routes = [
       {
         path: 'assets-directory',
         name: 'opt_asset_directory',
-        component: () => import('@/views/Pages/Operation/AssetDirectory/Index.vue'),
+        component: () => import('@/views/Pages/Operation/AssetManagement/AssetDirectory/Index.vue'),
       },
       {
         path: 'assignment',
