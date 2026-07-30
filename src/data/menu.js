@@ -208,18 +208,18 @@ export const menuData = [
   {
     groupName: 'Asset Management',
     menus: [
+      {
+        label: 'Registration',
+        routeName: 'opt_asset_registration',
+        roles: ['superadmin', 'admin', 'director', 'manager'],
+        submenus: [],
+      },
       // ---------------- ASSET OPERATIONS ----------------
       {
         label: 'Operations',
         routeName: null,
         roles: ['superadmin', 'admin', 'director', 'manager'],
         submenus: [
-          {
-            label: 'Registration',
-            routeName: 'opt_asset_registration',
-            roles: ['superadmin', 'admin', 'director', 'manager'],
-            submenus: [],
-          },
           {
             label: 'Assets Directory',
             routeName: 'opt_asset_directory',
@@ -236,6 +236,13 @@ export const menuData = [
             label: 'Movement',
             routeName: 'opt_asset_movement',
             roles: ['superadmin', 'admin', 'director', 'manager'],
+            submenus: [],
+          },
+          {
+            label: 'Maintenance',
+            routeName: 'maintenance',
+            roles: ['superadmin', 'admin', 'user'],
+            icon: 'analytics',
             submenus: [],
           },
           {
@@ -278,14 +285,7 @@ export const menuData = [
           },
         ],
       },
-      // ---------------- MAINTENANCE ----------------
-      {
-        label: 'Maintenance',
-        routeName: 'maintenance',
-        roles: ['superadmin', 'admin', 'user'],
-        icon: 'analytics',
-        submenus: [],
-      },
+
       // ---------------- INVENTORY ----------------
       {
         label: 'Inventory',
