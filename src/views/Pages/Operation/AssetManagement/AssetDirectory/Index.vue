@@ -48,6 +48,7 @@
 
     <DataTable
       :headers="[
+        '',
         'Asset Code',
         'Asset Name',
         'Category',
@@ -148,6 +149,10 @@
         :key="item.id"
         class="border-b border-stroke hover:bg-gray-50"
       >
+        <td class="border-r px-4 py-4 text-center">
+          <input type="checkbox" :value="item.id" v-model="selectedIds" class="h-4 w-4" />
+        </td>
+
         <td class="border-r px-4 py-4 font-semibold text-primary">
           {{ item.asset.code }}
         </td>
@@ -279,6 +284,9 @@ const toggleSelectAll = () => {
 }
 
 const printLabels = async (payload) => {
+  console.log('=== PRINT LABEL ===')
+  console.log(payload)
+
   try {
     const token = localStorage.getItem('token')
 
@@ -286,20 +294,19 @@ const printLabels = async (payload) => {
       `${apiUrl}/print-label`,
       {
         ...payload,
-
         category: filters.value.category,
         usage: filters.value.usage,
-
         search: search.value,
       },
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-
         responseType: 'blob',
       },
     )
+
+    console.log(response)
 
     const file = new Blob([response.data], {
       type: 'application/pdf',
