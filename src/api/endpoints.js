@@ -47,7 +47,7 @@ export const API_ENDPOINTS = {
   optPurchaseOrder_masters: '/opt_purchase_order_masters',
   optGoodsReceipt: '/opt_goods_receipt',
   assetRegistration: '/opt_asset_registration',
-  assetRegistrationMasters: '/opt_asset-registration/masters',
+  assetRegistrationMasters: '/opt_asset_registration/masters',
   optAssetDirectory: 'opt_asset_directory',
   optAssetDirectoryMasters: '/opt_asset_directory/masters',
 

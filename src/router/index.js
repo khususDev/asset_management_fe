@@ -228,6 +228,16 @@ const routes = [
         component: () => import('@/views/Pages/Operation/AssetManagement/Registration/Create.vue'),
       },
       {
+        path: 'registration/create',
+        name: 'opt_asset_registration.create_existing',
+        component: () =>
+          import('@/views/Pages/Operation/AssetManagement/registration/CreateExisting.vue'),
+        meta: {
+          title: 'Register Existing Asset',
+          requiresAuth: true,
+        },
+      },
+      {
         path: 'assets-directory',
         name: 'opt_asset_directory',
         component: () => import('@/views/Pages/Operation/AssetManagement/AssetDirectory/Index.vue'),

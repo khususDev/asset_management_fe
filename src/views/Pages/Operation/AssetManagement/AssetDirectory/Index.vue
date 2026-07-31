@@ -48,6 +48,7 @@
 
     <DataTable
       :headers="[
+        '',
         'Asset Code',
         'Asset Name',
         'Category',
@@ -133,8 +134,12 @@
           >
             <option value="">All Usage</option>
 
-            <option v-for="usage in usageStatuses" :key="usage.code" :value="usage.code">
-              {{ usage.name }}
+            <option
+              v-for="usage in usageStatuses"
+              :key="usage.code || usage.value || usage.id"
+              :value="usage.code || usage.value || usage.id"
+            >
+              {{ usage.name || usage.label }}
             </option>
           </select>
         </div>
@@ -148,6 +153,14 @@
         :key="item.id"
         class="border-b border-stroke hover:bg-gray-50"
       >
+        <td class="px-4 py-4 text-center">
+          <input
+            type="checkbox"
+            :value="item.id"
+            v-model="selectedIds"
+            class="h-4 w-4 rounded border-stroke text-primary focus:ring-primary"
+          />
+        </td>
         <td class="border-r px-4 py-4 font-semibold text-primary">
           {{ item.asset.code }}
         </td>
@@ -204,6 +217,8 @@
 
     <PrintLabelModal
       :show="showPrintLabelModal"
+      :selected-count="selectedIds.length"
+      :total-filtered="table.total"
       @close="showPrintLabelModal = false"
       @print="printLabels"
     />
@@ -224,7 +239,7 @@ import StatusBadge from '@/components/Badge/StatusBadge.vue'
 import UsageStatusBadge from '@/components/Badge/UsageStatusBadge.vue'
 import useTable from '@/Composables/useTable'
 import DetailAssetModal from './components/DetailAssetModal.vue'
-import PrintLabelModal from '../../components/PrintLabelModal.vue'
+import PrintLabelModal from './components/PrintLabelModal.vue'
 
 const isGlobalLoading = ref(false)
 const isFetching = ref(false)
@@ -282,36 +297,31 @@ const printLabels = async (payload) => {
   try {
     const token = localStorage.getItem('token')
 
-    const response = await axios.post(
-      `${apiUrl}/print-label`,
-      {
-        ...payload,
+    // Siapkan body request
+    const requestData = {
+      paper_size: payload.paper_size,
+      category: filters.value.category,
+      usage: filters.value.usage,
+      search: search.value,
+      // Kirim selected_ids HANYA jika scope 'SELECTED'
+      selected_ids: payload.print_scope === 'SELECTED' ? selectedIds.value : [],
+    }
 
-        category: filters.value.category,
-        usage: filters.value.usage,
-
-        search: search.value,
+    const response = await axios.post(`${apiUrl}/print-label`, requestData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-
-        responseType: 'blob',
-      },
-    )
-
-    const file = new Blob([response.data], {
-      type: 'application/pdf',
+      responseType: 'blob', // Penting agar file PDF diterima sebagai Blob
     })
 
-    const url = window.URL.createObjectURL(file)
-
-    window.open(url)
+    // Buat Blob URL dan buka PDF di Tab Baru
+    const file = new Blob([response.data], { type: 'application/pdf' })
+    const fileURL = URL.createObjectURL(file)
+    window.open(fileURL, '_blank')
 
     showPrintLabelModal.value = false
   } catch (error) {
-    console.error(error)
+    console.error('Gagal mencetak label:', error)
   }
 }
 
