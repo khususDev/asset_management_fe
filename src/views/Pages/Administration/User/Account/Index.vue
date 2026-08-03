@@ -1,8 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-
-import Breadcrumb from '@/Components/Page/Breadcrumb.vue'
+import PageTitle from '@/Components/common/PageTitle.vue'
 import DataTable from '@/Components/Table/DataTable.vue'
 import Pagination from '@/Components/Table/Pagination.vue'
 import TableAction from '@/Components/Table/TableAction.vue'
@@ -14,11 +13,10 @@ import FormSelect from '@/Components/Form/FormSelect.vue' // Komponen baru
 import Modal from '@/Components/Modal/Modal.vue'
 import ConfirmModal from '@/Components/Modal/ConfirmModal.vue'
 import StatusBadge from '@/Components/Badge/StatusBadge.vue'
-import FileUpload from '@/Components/Form/FileUpload.vue' // Komponen baru untuk upload file
 
 import useCrud from '@/Composables/useCrud'
 import useTable from '@/Composables/useTable'
-import { API_BASE_URL, API_ENDPOINTS } from '@/api/endpoints'
+import { API_ENDPOINTS } from '@/api/endpoints'
 
 // --- STATE MANAGEMENT ---
 const usersData = ref({})
@@ -108,7 +106,7 @@ const handleDelete = () => {
 
 <template>
   <div class="mx-auto max-w-screen-2xl">
-    <Breadcrumb pageTitle="User Account" :crumbs="['Administrator', 'User Management']" />
+    <PageTitle title="Master User Accounts" />
 
     <DataTable
       :headers="['Name', 'Email', 'Role', 'Status', 'Action']"
@@ -160,7 +158,7 @@ const handleDelete = () => {
         <td
           class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark"
         >
-          <TableAction @edit="openEdit(user)" @delete="openDelete(user.id)" />
+          <TableAction show-edit-delete @edit="openEdit(user)" @delete="openDelete(user.id)" />
         </td>
       </tr>
 

@@ -21,7 +21,7 @@
       </div>
     </div>
 
-    <Breadcrumb :pageTitle="'Edit PR: ' + prNumber" :crumbs="['Operations', 'Purchase Request']" />
+    <PageTitle title="Edit Purchase Request" />
 
     <div
       v-if="isDataFetching"
@@ -389,7 +389,7 @@ import { API_ENDPOINTS } from '@/api/endpoints'
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
-import Breadcrumb from '@/Components/Page/Breadcrumb.vue'
+import PageTitle from '@/Components/common/PageTitle.vue'
 import DateInput from '@/components/Form/DateInput.vue'
 
 const router = useRouter()

@@ -1,8 +1,6 @@
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue'
 import axios from 'axios'
-
-// Import Komponen Global Sesuai Standar Template Anda
 import Breadcrumb from '@/Components/Page/Breadcrumb.vue'
 import DataTable from '@/Components/Table/DataTable.vue'
 import Pagination from '@/Components/Table/Pagination.vue'
@@ -10,8 +8,7 @@ import TableEmpty from '@/Components/Table/TableEmpty.vue'
 import TableLoading from '@/Components/Table/TableLoading.vue'
 import { VueDatePicker } from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
-
-// Import Composables Bawaan Template
+import PageTitle from '@/Components/common/PageTitle.vue'
 import useTable from '@/Composables/useTable'
 
 // --- STATE MANAGEMENT ---
@@ -116,7 +113,7 @@ onMounted(() => {
 
 <template>
   <div class="mx-auto max-w-screen-2xl">
-    <Breadcrumb pageTitle="System Logs" :crumbs="['Administration', 'System Settings']" />
+    <PageTitle title="System Logs" />
 
     <DataTable
       :headers="['Date & Time', 'Actor', 'Action', 'Module', 'Change Details']"

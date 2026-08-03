@@ -1,6 +1,6 @@
 <template>
   <div class="mx-auto max-w-screen-2xl">
-    <Breadcrumb pageTitle="Asset Types" :crumbs="['Administration', 'Asset Master', 'Types']" />
+    <PageTitle title="Master Asset Types" />
 
     <DataTable
       :headers="['Code', 'Type Name', 'Category', 'Description', 'Status', 'Action']"
@@ -17,7 +17,7 @@
           @click="openCreate"
           class="rounded bg-primary py-2 px-4 text-sm font-medium text-white hover:bg-opacity-90"
         >
-          Tambah Tipe
+          Create Type
         </button>
       </template>
 
@@ -57,7 +57,7 @@
         <td
           class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark"
         >
-          <TableAction @edit="openEdit(type)" @delete="openDelete(type.id)" />
+          <TableAction show-edit-delete @edit="openEdit(type)" @delete="openDelete(type.id)" />
         </td>
       </tr>
 
@@ -137,12 +137,10 @@
 </template>
 
 <script setup>
-import { API_BASE_URL, API_ENDPOINTS } from '@/api/endpoints'
-
+import { API_ENDPOINTS } from '@/api/endpoints'
+import PageTitle from '@/Components/common/PageTitle.vue'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-
-import Breadcrumb from '@/Components/Page/Breadcrumb.vue'
 import DataTable from '@/Components/Table/DataTable.vue'
 import Pagination from '@/Components/Table/Pagination.vue'
 import TableAction from '@/Components/Table/TableAction.vue'
@@ -160,7 +158,7 @@ import useTable from '@/Composables/useTable'
 
 // --- STATE MANAGEMENT ---
 const typesData = ref({})
-const categoriesList = ref([]) // Untuk menampung data pilihan dropdown kategori
+const categoriesList = ref([])
 const isFetching = ref(false)
 
 const apiUrl = API_ENDPOINTS.asmType

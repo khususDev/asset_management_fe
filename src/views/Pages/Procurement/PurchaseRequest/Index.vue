@@ -27,7 +27,7 @@
       </div>
     </div>
 
-    <Breadcrumb pageTitle="Purchase Request" :crumbs="['Operations', 'Asset Operations']" />
+    <PageTitle title="Purchase Request" />
 
     <DataTable
       :headers="['PR Number', 'Created', 'Department', 'Est. Amount', 'Status', 'Action']"
@@ -159,8 +159,7 @@ import { API_ENDPOINTS } from '@/api/endpoints'
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
-
-import Breadcrumb from '@/Components/Page/Breadcrumb.vue'
+import PageTitle from '@/Components/common/PageTitle.vue'
 import DataTable from '@/Components/Table/DataTable.vue'
 import Pagination from '@/Components/Table/Pagination.vue'
 import TableAction from '@/Components/Table/TableAction.vue'

@@ -159,9 +159,12 @@
         <div class="md:col-span-2">
           <label class="mb-2 block text-sm font-medium"> Remarks </label>
 
-          <textarea
+          <FormInput
             rows="4"
             v-model="model.remarks"
+            is-textarea
+            placeholder="Tambahkan catatan tambahan..."
+            format="uppercase"
             class="w-full rounded border border-stroke px-4 py-3"
           />
         </div>
@@ -199,6 +202,7 @@
 <script setup>
 import { computed } from 'vue'
 import DateInput from '@/components/Form/DateInput.vue'
+import FormInput from '@/components/Form/FormInput.vue'
 
 const model = defineModel()
 

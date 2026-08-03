@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <Breadcrumb pageTitle="Goods Receipt" :crumbs="['Operations', 'Procurement']" />
+    <PageTitle title="Goods Receipt" />
 
     <DataTable
       :headers="['GR Number', 'Receipt Date', 'PO Number', 'Vendor', 'Status', 'Action']"
@@ -110,7 +110,7 @@
 <script setup>
 import axios from 'axios'
 import { ref, onMounted } from 'vue'
-import Breadcrumb from '@/Components/Page/Breadcrumb.vue'
+import PageTitle from '@/Components/common/PageTitle.vue'
 import DataTable from '@/Components/Table/DataTable.vue'
 import TableAction from '@/Components/Table/TableAction.vue'
 import ConfirmModal from '@/Components/Modal/ConfirmModal.vue' // Import ConfirmModal yang sudah diperbarui

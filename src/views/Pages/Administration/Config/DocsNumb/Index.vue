@@ -1,6 +1,6 @@
 <template>
   <div class="mx-auto max-w-screen-2xl">
-    <Breadcrumb pageTitle="Document Numbering" :crumbs="['Administration', 'System Settings']" />
+    <PageTitle title="Document Numbering" />
 
     <DataTable
       :headers="[
@@ -259,8 +259,7 @@ import { API_ENDPOINTS } from '@/api/endpoints'
 
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
-
-import Breadcrumb from '@/Components/Page/Breadcrumb.vue'
+import PageTitle from '@/Components/common/PageTitle.vue'
 import DataTable from '@/Components/Table/DataTable.vue'
 import Pagination from '@/Components/Table/Pagination.vue'
 import TableAction from '@/Components/Table/TableAction.vue'

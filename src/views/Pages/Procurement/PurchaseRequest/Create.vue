@@ -22,10 +22,7 @@
       </div>
     </div>
 
-    <Breadcrumb
-      pageTitle="Tambah Purchase Request Baru"
-      :crumbs="['Operations', 'Purchase Request', 'Create']"
-    />
+    <PageTitle title="Create Purchase Request" />
 
     <div
       v-if="isDataFetching"
@@ -123,12 +120,15 @@
               <label class="mb-2.5 block text-black dark:text-white font-medium"
                 >General Purpose</label
               >
-              <textarea
+              <FormInput
                 v-model="form.purpose"
-                rows="2"
+                rows="4"
+                format="uppercase"
+                is-textarea
+                :error="errors?.purpose ? errors.purpose[0] : null"
                 placeholder="Tujuan umum PR ini..."
                 class="w-full rounded border-[1.5px] border-stroke bg-transparent py-2 px-4 outline-none focus:border-primary dark:border-form-strokedark dark:bg-form-input"
-              ></textarea>
+              ></FormInput>
             </div>
           </div>
         </div>
@@ -185,8 +185,15 @@
                   <label class="mb-1 block text-sm font-medium text-black dark:text-white"
                     >Deskripsi / Nama Barang *</label
                   >
-                  <input
+                  <FormInput
                     type="text"
+                    format="uppercase"
+                    :error="
+                      errors?.items && errors.items[index] && errors.items[index].item_description
+                        ? errors.items[index].item_description[0]
+                        : null
+                    "
+                    placeholder="Nama / Deskripsi Barang"
                     v-model="item.item_description"
                     class="w-full rounded border-[1.5px] border-stroke bg-transparent py-2 px-3 text-sm outline-none focus:border-primary dark:border-form-strokedark dark:bg-form-input"
                   />
@@ -254,8 +261,14 @@
                     Vendor Name
                   </label>
 
-                  <input
+                  <FormInput
                     type="text"
+                    format="uppercase"
+                    :error="
+                      errors?.items && errors.items[index] && errors.items[index].vendor_name
+                        ? errors.items[index].vendor_name[0]
+                        : null
+                    "
                     v-model="item.vendor_name"
                     placeholder="Nama Vendor / Nama Toko"
                     class="w-full rounded border-[1.5px] border-stroke bg-white py-2 px-3 text-sm dark:bg-form-input"
@@ -370,10 +383,19 @@
                 class="mt-4 border-t border-stroke dark:border-strokedark pt-3 flex justify-between items-end"
               >
                 <div class="w-2/3">
-                  <input
+                  <FormInput
                     type="text"
+                    format="uppercase"
+                    :error="
+                      errors?.items && errors.items[index] && errors.items[index].item_purpose
+                        ? errors.items[index].item_purpose[0]
+                        : null
+                    "
+                    label="Tujuan Spesifik Barang"
                     v-model="item.item_purpose"
-                    placeholder="Tujuan spesifik barang..."
+                    is-textarea
+                    placeholder="Tujuan spesifik barang ini..."
+                    rows="2"
                     class="w-full border-b bg-transparent py-1 text-sm outline-none focus:border-primary dark:border-form-strokedark"
                   />
                 </div>
@@ -423,13 +445,14 @@
 </template>
 
 <script setup>
-import { API_BASE_URL, API_ENDPOINTS } from '@/api/endpoints'
+import { API_ENDPOINTS } from '@/api/endpoints'
 
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
-import Breadcrumb from '@/Components/Page/Breadcrumb.vue'
+import PageTitle from '@/Components/common/PageTitle.vue'
 import DateInput from '@/components/Form/DateInput.vue'
+import FormInput from '@/components/Form/FormInput.vue'
 
 const router = useRouter()
 const loading = ref(false)

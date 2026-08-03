@@ -22,14 +22,14 @@
             <span class="text-danger">*</span>
           </label>
 
-          <textarea
-            rows="3"
+          <FormInput
             v-model="model.serial_number"
-            format="UPPERCASE"
-            class="w-full rounded border border-stroke px-4 py-3"
+            format="uppercase"
+            :error="errors?.serial_number ? errors.serial_number[0] : null"
             placeholder="XXXXX-XXXXX-XXXXX-XXXXX"
+            class="w-full rounded border border-stroke px-4 py-3"
           >
-          </textarea>
+          </FormInput>
         </div>
 
         <!-- Category -->
@@ -188,6 +188,7 @@
 import { computed } from 'vue'
 
 import DateInput from '@/components/Form/DateInput.vue'
+import FormInput from '@/components/Form/FormInput.vue'
 
 const model = defineModel()
 

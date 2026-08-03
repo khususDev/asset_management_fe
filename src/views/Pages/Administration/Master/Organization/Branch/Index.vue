@@ -1,6 +1,6 @@
 <template>
   <div class="mx-auto max-w-screen-2xl">
-    <Breadcrumb pageTitle="Master Branch" :crumbs="['Administration', 'Organization', 'Branch']" />
+    <PageTitle title="Master Branchs" />
 
     <DataTable
       :headers="['Code', 'Branch Name', 'Phone', 'Address', 'Status', 'Action']"
@@ -57,7 +57,7 @@
         <td
           class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark"
         >
-          <TableAction @edit="openEdit(branch)" @delete="openDelete(branch.id)" />
+          <TableAction show-edit-delete @edit="openEdit(branch)" @delete="openDelete(branch.id)" />
         </td>
       </tr>
 
@@ -136,13 +136,10 @@
 </template>
 
 <script setup>
-import { API_BASE_URL, API_ENDPOINTS } from '@/api/endpoints'
-
+import { API_ENDPOINTS } from '@/api/endpoints'
+import PageTitle from '@/Components/common/PageTitle.vue'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-
-// Pastikan letak path components ini sesuai dengan struktur folder Anda
-import Breadcrumb from '@/Components/Page/Breadcrumb.vue'
 import DataTable from '@/Components/Table/DataTable.vue'
 import Pagination from '@/Components/Table/Pagination.vue'
 import TableAction from '@/Components/Table/TableAction.vue'

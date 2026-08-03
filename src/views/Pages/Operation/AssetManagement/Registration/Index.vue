@@ -1,9 +1,17 @@
 <template>
   <div class="mx-auto max-w-screen-2xl">
-    <Breadcrumb pageTitle="Asset Registration" :crumbs="['Operations', 'Asset Management']" />
+    <PageTitle title="Asset Registration" />
 
     <DataTable
-      :headers="['Asset', 'Class', 'Department', 'Vendor', 'Purchase', 'Status', 'Action']"
+      :headers="[
+        'Asset / Item',
+        'Class',
+        'Department',
+        'Vendor',
+        'Ref / Doc Code',
+        'Status',
+        'Action',
+      ]"
       :from="assets.from"
       :to="assets.to"
       :total="assets.total"
@@ -12,7 +20,7 @@
       @search="search = $event"
       @update:entries="entries = $event"
     >
-      <!-- TAMBAHKAN ACTION DI HEADER SEBELAH KANAN / SEARCH -->
+      <!-- ACTION HEADER SEBELAH KANAN -->
       <template #top-actions>
         <button
           class="rounded bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-opacity-90"
@@ -35,6 +43,7 @@
           Import Excel
         </button>
 
+        <!-- Modal Import -->
         <div
           v-if="showImportModal"
           class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
@@ -46,7 +55,6 @@
               template.
             </p>
 
-            <!-- Tombol Download Template -->
             <div class="mb-4">
               <button
                 @click="downloadTemplate"
@@ -65,7 +73,6 @@
               </button>
             </div>
 
-            <!-- Input File -->
             <div class="mb-4">
               <input
                 type="file"
@@ -76,10 +83,9 @@
               />
             </div>
 
-            <!-- Tombol Aksi Modal -->
             <div class="flex justify-end gap-3">
               <button
-                @click="closeModal"
+                @click="showImportModal = false"
                 class="rounded border border-stroke px-4 py-2 text-sm text-body hover:bg-gray-2"
               >
                 Batal
@@ -98,66 +104,65 @@
 
       <TableLoading v-if="loading" :rows="5" :cols="7" />
 
-      <tr v-else v-for="item in assets.data" :key="item.id">
+      <tr v-else v-for="item in assets.data" :key="item.record_id + '-' + item.asset_class">
+        <!-- 1. Nama Aset & Sumber -->
         <td class="px-4 py-4 text-left">
-          <div class="font-semibold">
-            {{ item.asset.name }}
+          <div class="font-semibold text-black dark:text-white">
+            {{ item.item_name ?? '-' }}
           </div>
-
-          <!-- Tandai jika Aset Manual/Eksisting -->
-          <div class="text-xs text-gray-500">
-            {{ item.document.gr_number ?? 'MANUAL / EXISTING' }}
-          </div>
+          <div class="text-xs text-gray-500">Source: {{ item.source ?? 'MANUAL' }}</div>
         </td>
 
+        <!-- 2. Class -->
         <td class="text-center">
-          <span :class="classColor(item.asset.class)" class="px-2 py-1 rounded text-xs font-medium">
-            {{ formatAssetClass(item.asset.class) }}
+          <span :class="classColor(item.asset_class)" class="px-2 py-1 rounded text-xs font-medium">
+            {{ formatAssetClass(item.asset_class) }}
           </span>
         </td>
 
-        <td class="text-center">
-          {{ item.department.name ?? '-' }}
+        <!-- 3. Department -->
+        <td class="text-center text-sm">
+          {{ item.department_name ?? '-' }}
         </td>
 
-        <td class="text-center">
-          {{ item.vendor.name ?? '-' }}
+        <!-- 4. Vendor -->
+        <td class="text-center text-sm">
+          {{ item.vendor_name ?? '-' }}
         </td>
 
-        <td class="text-center">
-          <div>{{ item.document.po_number ?? '-' }}</div>
-
-          <div class="text-xs text-gray-500">
-            {{ item.document.pr_number ?? '-' }}
-          </div>
+        <!-- 5. Kode Referensi / Dokumen -->
+        <td class="text-center text-sm font-mono">
+          {{ item.reference_code ?? '-' }}
         </td>
 
+        <!-- 6. Status -->
         <td class="text-center">
           <span
             class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
             :class="{
-              'bg-warning/20 text-warning': item.asset.status == 'WAITING_REGISTRATION',
-              'bg-success/20 text-success': item.asset.status == 'REGISTERED',
+              'bg-warning/20 text-warning': item.registration_status === 'WAITING_REGISTRATION',
+              'bg-success/20 text-success': item.registration_status === 'REGISTERED',
             }"
           >
-            {{ item.asset.status }}
+            {{ item.registration_status === 'WAITING_REGISTRATION' ? 'WAITING' : 'REGISTERED' }}
           </span>
         </td>
 
+        <!-- 7. Action -->
         <td class="text-center">
           <button
-            v-if="item.asset.status === 'WAITING_REGISTRATION'"
-            class="rounded bg-primary px-3 py-1 text-white hover:bg-opacity-90 text-xs"
+            v-if="item.registration_status === 'WAITING_REGISTRATION'"
+            class="rounded bg-primary px-3 py-1 text-white hover:bg-opacity-90 text-xs font-medium"
             @click="
               $router.push({
                 name: 'opt_asset_registration.create',
-                params: { id: item.id },
+                params: { id: item.record_id },
               })
             "
           >
             Register
           </button>
-          <span v-else class="text-xs text-gray-400">Registered</span>
+          <span v-else class="text-xs text-gray-400 font-medium">Completed</span>
         </td>
       </tr>
 
@@ -167,14 +172,6 @@
         <Pagination :links="assets.links" @change-page="fetchAssets" />
       </template>
     </DataTable>
-
-    <!-- Modal Form Aset Eksisting -->
-    <RegisterExistingModal
-      :show="showExistingModal"
-      :masters="masters"
-      @close="showExistingModal = false"
-      @success="fetchAssets"
-    />
   </div>
 </template>
 
@@ -184,8 +181,7 @@ import { ref, onMounted } from 'vue'
 
 import { API_ENDPOINTS } from '@/api/endpoints'
 import useTable from '@/Composables/useTable'
-
-import Breadcrumb from '@/Components/Page/Breadcrumb.vue'
+import PageTitle from '@/Components/common/PageTitle.vue'
 import DataTable from '@/Components/Table/DataTable.vue'
 import Pagination from '@/Components/Table/Pagination.vue'
 import TableLoading from '@/Components/Table/TableLoading.vue'
@@ -193,31 +189,11 @@ import TableEmpty from '@/Components/Table/TableEmpty.vue'
 
 const assets = ref({ data: [], from: 0, to: 0, total: 0, links: [] })
 const loading = ref(false)
-const showExistingModal = ref(false)
-
-const masters = ref({
-  categories: [],
-  branches: [],
-  locations: [],
-  departments: [],
-  statuses: [],
-})
+const showImportModal = ref(false)
 
 const apiUrl = API_ENDPOINTS.assetRegistration
 
 const { search, entries } = useTable({ search: '', entries: 10 }, () => fetchAssets())
-
-const fetchMasters = async () => {
-  try {
-    const token = localStorage.getItem('token')
-    const response = await axios.get(API_ENDPOINTS.optAssetDirectoryMasters, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    masters.value = response.data.data
-  } catch (error) {
-    console.error('Gagal mengambil data master:', error)
-  }
-}
 
 const fetchAssets = async (url = apiUrl) => {
   loading.value = true
@@ -228,15 +204,18 @@ const fetchAssets = async (url = apiUrl) => {
       headers: { Authorization: `Bearer ${token}` },
     })
 
+    const rawData = response.data.data ?? []
+
+    // Karena backend mengembalikan array hasil gabungan
     assets.value = {
-      data: response.data.data ?? [],
-      from: response.data.meta?.from ?? 0,
-      to: response.data.meta?.to ?? 0,
-      total: response.data.meta?.total ?? 0,
+      data: Array.isArray(rawData) ? rawData : (rawData.data ?? []),
+      from: response.data.meta?.from ?? (rawData.length > 0 ? 1 : 0),
+      to: response.data.meta?.to ?? rawData.length,
+      total: response.data.meta?.total ?? rawData.length,
       links: response.data.meta?.links ?? [],
     }
   } catch (err) {
-    console.error(err)
+    console.error('Error fetching registration data:', err)
     assets.value = { data: [], from: 0, to: 0, total: 0, links: [] }
   } finally {
     loading.value = false
@@ -271,6 +250,5 @@ const classColor = (value) => {
 
 onMounted(() => {
   fetchAssets()
-  fetchMasters()
 })
 </script>

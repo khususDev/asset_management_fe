@@ -3,7 +3,7 @@
     <div class="bg-white rounded-lg w-[1000px] max-h-[90vh] overflow-y-auto p-6">
       <!-- Header -->
       <div class="flex justify-between mb-6">
-        <h3 class="text-xl font-bold">Purchase Order Detail</h3>
+        <PageTitle title="Purchase Order Detail" />
 
         <button @click="$emit('close')" class="text-gray-500 hover:text-danger">✕</button>
       </div>
@@ -141,6 +141,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import PageTitle from '@/Components/common/PageTitle.vue'
 
 const props = defineProps({
   show: Boolean,

@@ -1,6 +1,6 @@
 <template>
   <div class="mx-auto max-w-screen-2xl">
-    <Breadcrumb pageTitle="Asset Status" :crumbs="['Administration', 'Asset Master', 'Status']" />
+    <PageTitle title="Master Asset Status" />
 
     <DataTable
       :headers="['Code', 'Status Name', 'Color Badge', 'Description', 'Active', 'Action']"
@@ -64,7 +64,7 @@
         <td
           class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark"
         >
-          <TableAction @edit="openEdit(status)" @delete="openDelete(status.id)" />
+          <TableAction show-edit-delete @edit="openEdit(status)" @delete="openDelete(status.id)" />
         </td>
       </tr>
 
@@ -157,12 +157,10 @@
 </template>
 
 <script setup>
-import { API_BASE_URL, API_ENDPOINTS } from '@/api/endpoints'
-
+import { API_ENDPOINTS } from '@/api/endpoints'
+import PageTitle from '@/Components/common/PageTitle.vue'
 import { ref, onMounted } from 'vue'
-import axios from 'axios' // pastikan import axios yang benar
-
-import Breadcrumb from '@/Components/Page/Breadcrumb.vue'
+import axios from 'axios'
 import DataTable from '@/Components/Table/DataTable.vue'
 import Pagination from '@/Components/Table/Pagination.vue'
 import TableAction from '@/Components/Table/TableAction.vue'

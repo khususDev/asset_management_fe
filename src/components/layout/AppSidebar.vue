@@ -50,6 +50,7 @@
 
             <ul class="flex flex-col gap-4">
               <li v-for="(item, index) in menuGroup.items" :key="item.name">
+                <!-- MENU DENGAN SUBMENU -->
                 <button
                   v-if="item.subItems && item.subItems.length > 0"
                   @click="toggleSubmenu(groupIndex, index)"
@@ -69,7 +70,9 @@
                         : 'menu-item-icon-inactive',
                     ]"
                   >
-                    <component :is="item.icon" class="w-5 h-5" />
+                    <!-- Render Iconify (String) atau Component SVG Lokal -->
+                    <Icon v-if="typeof item.icon === 'string'" :icon="item.icon" class="w-5 h-5" />
+                    <component v-else :is="item.icon" class="w-5 h-5" />
                   </span>
                   <span v-if="isExpanded || isHovered || isMobileOpen" class="menu-item-text">
                     {{ item.name }}
@@ -85,6 +88,7 @@
                   />
                 </button>
 
+                <!-- MENU SINGLE LINK -->
                 <router-link
                   v-else-if="item.path"
                   :to="item.path"
@@ -101,13 +105,16 @@
                       isActive(item.path) ? 'menu-item-icon-active' : 'menu-item-icon-inactive',
                     ]"
                   >
-                    <component :is="item.icon" class="w-5 h-5" />
+                    <!-- Render Iconify (String) atau Component SVG Lokal -->
+                    <Icon v-if="typeof item.icon === 'string'" :icon="item.icon" class="w-5 h-5" />
+                    <component v-else :is="item.icon" class="w-5 h-5" />
                   </span>
                   <span v-if="isExpanded || isHovered || isMobileOpen" class="menu-item-text">
                     {{ item.name }}
                   </span>
                 </router-link>
 
+                <!-- DROPDOWN SUBMENU LEVEL 2 -->
                 <transition
                   @enter="startTransition"
                   @after-enter="endTransition"
@@ -161,6 +168,7 @@
                             />
                           </button>
 
+                          <!-- DROPDOWN SUBMENU LEVEL 3 -->
                           <transition
                             @enter="startTransition"
                             @after-enter="endTransition"
@@ -224,6 +232,9 @@ import { menuData } from '@/data/menu.js'
 import { GridIcon, ChevronDownIcon, HorizontalDots } from '../../icons'
 import SidebarWidget from './SidebarWidget.vue'
 import { useSettingStore } from '@/stores/setting'
+import { Icon } from '@iconify/vue' // <--- PERBAIKAN: Gunakan Kapital "Icon"
+
+// Fallback Map untuk Ikon Lokal
 import {
   analytics,
   approval,
@@ -257,6 +268,16 @@ const iconMap = {
   users,
 }
 
+// Helper untuk mendeteksi apakah icon berupa Iconify String atau Component Lokal
+const resolveIcon = (iconName) => {
+  if (!iconName) return GridIcon
+  // Jika iconName berisi tanda titik dua (contoh: 'lucide:layout-dashboard'), gunakan string Iconify
+  if (typeof iconName === 'string' && (iconName.includes(':') || !iconMap[iconName])) {
+    return iconName
+  }
+  return iconMap[iconName] || GridIcon
+}
+
 // --- State Khusus Untuk Level 3 (Nested Submenu) ---
 const openNestedMenuKey = ref(null)
 
@@ -269,7 +290,6 @@ const isNestedOpen = (groupIndex, itemIndex, subIndex, subItem) => {
   const key = `${groupIndex}-${itemIndex}-${subIndex}`
   if (openNestedMenuKey.value === key) return true
 
-  // Otomatis terbuka jika ada anak menu yang sedang diakses
   if (subItem.subItems && subItem.subItems.some((sub3) => isActive(sub3.path))) {
     return true
   }
@@ -297,7 +317,7 @@ const mappedMenuGroups = computed(() => {
         .map((menu) => {
           return {
             name: menu.label,
-            icon: iconMap[menu.icon] || GridIcon,
+            icon: resolveIcon(menu.icon),
             path: menu.routeName ? { name: menu.routeName } : null,
             subItems: menu.submenus
               ?.filter((sub) => hasAccess(sub.roles))
@@ -378,3 +398,10 @@ const endTransition = (el) => {
   el.style.height = ''
 }
 </script>
+
+<style scoped>
+.menu-icon {
+  font-size: 20px;
+  margin-right: 8px;
+}
+</style>

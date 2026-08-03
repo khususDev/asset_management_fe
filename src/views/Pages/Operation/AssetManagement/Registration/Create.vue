@@ -25,10 +25,8 @@
     </div>
 
     <!-- Breadcrumb -->
-    <Breadcrumb
-      pageTitle="Asset Registration"
-      :crumbs="['Operations', 'Asset Management', 'Registration']"
-    />
+
+    <PageTitle title="Asset Registration" />
 
     <!-- Loading -->
     <div v-if="isLoading" class="rounded-lg border bg-white p-10 text-center">Loading...</div>
@@ -135,9 +133,7 @@
 import axios from 'axios'
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-
-import Breadcrumb from '@/Components/Page/Breadcrumb.vue'
-
+import PageTitle from '@/Components/common/PageTitle.vue'
 import FixedAssetForm from './components/FixedAssetForm.vue'
 import ConsumableForm from './components/ConsumableForm.vue'
 import LicenseForm from './components/LicenseForm.vue'

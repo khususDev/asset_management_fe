@@ -252,6 +252,12 @@ const routes = [
         name: 'opt_asset_movement',
         component: () => import('@/views/Pages/Operation/Movement/Index.vue'),
       },
+      // Maintenance
+      {
+        path: 'maintenance',
+        name: 'maintenance',
+        component: () => import('@/views/Pages/Maintenance/Index.vue'), // Sesuaikan dengan lokasi file Anda
+      },
       {
         path: 'disposal',
         name: 'opt_asset_disposal',
@@ -282,58 +288,60 @@ const routes = [
 
       // Asset Complience
       {
-        path: 'License Registry',
-        name: 'a&l_license_registry',
-        component: () => import('@/views/Pages/Complience/LicenseRegistry/Index.vue'), // Sesuaikan dengan lokasi file Anda
+        path: 'software-license',
+        name: 'software_licenses',
+        component: () =>
+          import('@/views/Pages/Operation/AssetManagement/Compliance/License/Index.vue'), // Sesuaikan dengan lokasi file Anda
       },
       {
-        path: 'Contract-Leases',
-        name: 'a&l_contract_leases',
-        component: () => import('@/views/Pages/Complience/ContractLeases/Index.vue'), // Sesuaikan dengan lokasi file Anda
+        path: 'contract-leases',
+        name: 'contract_leases',
+        component: () =>
+          import('@/views/Pages/Operation/AssetManagement/Compliance/License/Index.vue'), // Sesuaikan dengan lokasi file Anda
       },
       {
-        path: 'Warranty',
-        name: 'a&l_warranty',
-        component: () => import('@/views/Pages/Complience/Warranty/Index.vue'), // Sesuaikan dengan lokasi file Anda
+        path: 'warranty',
+        name: 'warranty',
+        component: () =>
+          import('@/views/Pages/Operation/AssetManagement/Compliance/License/Index.vue'), // Sesuaikan dengan lokasi file Anda
       },
       {
-        path: 'Audit Verification',
-        name: 'a&l_audit_verification',
-        component: () => import('@/views/Pages/Complience/AuditVerification/Index.vue'), // Sesuaikan dengan lokasi file Anda
-      },
-
-      // Maintenance
-      {
-        path: 'maintenance',
-        name: 'maintenance',
-        component: () => import('@/views/Pages/Maintenance/Index.vue'), // Sesuaikan dengan lokasi file Anda
+        path: 'audit-verification',
+        name: 'audit_verification',
+        component: () =>
+          import('@/views/Pages/Operation/AssetManagement/Compliance/License/Index.vue'), // Sesuaikan dengan lokasi file Anda
       },
 
       // Inventory
       {
-        path: 'sparepart',
-        name: 'sparepart',
-        component: () => import('@/views/Pages/Inventory/SparePart/Index.vue'), // Sesuaikan dengan lokasi file Anda
+        path: 'stock-consumable',
+        name: 'stock_consumable',
+        component: () =>
+          import('@/views/Pages/Operation/AssetManagement/Inventory/Consumable/Index.vue'), // Sesuaikan dengan lokasi file Anda
       },
       {
-        path: 'consumable',
-        name: 'consumable',
-        component: () => import('@/views/Pages/Inventory/Consumable/Index.vue'), // Sesuaikan dengan lokasi file Anda
+        path: 'stock-issue',
+        name: 'stock_issue',
+        component: () =>
+          import('@/views/Pages/Operation/AssetManagement/Inventory/Consumable/Index.vue'), // Sesuaikan dengan lokasi file Anda
       },
       {
         path: 'stock-movement',
         name: 'stock_movement',
-        component: () => import('@/views/Pages/Inventory/Movement/Index.vue'), // Sesuaikan dengan lokasi file Anda
+        component: () =>
+          import('@/views/Pages/Operation/AssetManagement/Inventory/Consumable/Index.vue'), // Sesuaikan dengan lokasi file Anda
       },
       {
         path: 'stock-opname',
         name: 'stock_opname',
-        component: () => import('@/views/Pages/Inventory/Opname/Index.vue'), // Sesuaikan dengan lokasi file Anda
+        component: () =>
+          import('@/views/Pages/Operation/AssetManagement/Inventory/Consumable/Index.vue'), // Sesuaikan dengan lokasi file Anda
       },
       {
         path: 'stock-adjustment',
         name: 'stock_adjustment',
-        component: () => import('@/views/Pages/Inventory/Adjustment/Index.vue'), // Sesuaikan dengan lokasi file Anda
+        component: () =>
+          import('@/views/Pages/Operation/AssetManagement/Inventory/Consumable/Index.vue'), // Sesuaikan dengan lokasi file Anda
       },
     ],
   },

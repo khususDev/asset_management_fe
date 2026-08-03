@@ -1,214 +1,304 @@
 <template>
   <!-- Top Loading -->
   <div
-    class="fixed left-0 top-0 z-[99999] h-1 bg-primary transition-all duration-300"
+    class="fixed left-0 top-0 z-[99999] h-1 bg-blue-600 transition-all duration-300"
     :class="isGlobalLoading ? 'w-full' : 'w-0'"
   ></div>
 
-  <div class="mx-auto max-w-screen-2xl">
-    <Breadcrumb pageTitle="Asset Directory" :crumbs="['Operations', 'Asset Management']" />
-
-    <!-- Statistic -->
-    <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-5">
-      <div class="rounded-lg border bg-white p-5 shadow-sm">
-        <p class="text-sm text-gray-500">Total Asset</p>
-        <h2 class="mt-2 text-3xl font-bold">
-          {{ statistics.total }}
-        </h2>
+  <div class="mx-auto max-w-screen-2xl p-3 bg-gray-50 min-h-screen">
+    <!-- Breadcrumb & Header -->
+    <div class="mb-3 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="mb-2">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Fixed Assets Directory</h1>
+        <!-- Garis Aksen Biru Pendek -->
+        <div class="h-1 w-16 bg-blue-600 rounded-full mt-2"></div>
       </div>
-
-      <div class="rounded-lg border bg-white p-5 shadow-sm">
-        <p class="text-sm text-gray-500">Available</p>
-        <h2 class="mt-2 text-3xl font-bold text-success">
-          {{ statistics.available }}
-        </h2>
-      </div>
-
-      <div class="rounded-lg border bg-white p-5 shadow-sm">
-        <p class="text-sm text-gray-500">Assigned</p>
-        <h2 class="mt-2 text-3xl font-bold text-primary">
-          {{ statistics.assigned }}
-        </h2>
-      </div>
-
-      <div class="rounded-lg border bg-white p-5 shadow-sm">
-        <p class="text-sm text-gray-500">Maintenance</p>
-        <h2 class="mt-2 text-3xl font-bold text-warning">
-          {{ statistics.maintenance }}
-        </h2>
-      </div>
-
-      <div class="rounded-lg border bg-white p-5 shadow-sm">
-        <p class="text-sm text-gray-500">Disposed</p>
-        <h2 class="mt-2 text-3xl font-bold text-danger">
-          {{ statistics.disposed }}
-        </h2>
+      <div>
+        <button
+          @click="fetchAssets()"
+          class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 shadow-sm transition"
+        >
+          <svg
+            class="w-4 h-4 mr-2 text-gray-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+            />
+          </svg>
+          Refresh Data
+        </button>
       </div>
     </div>
 
-    <DataTable
-      :headers="[
-        '',
-        'Asset Code',
-        'Asset Name',
-        'Category',
-        'Type',
-        'Branch',
-        'Location',
-        'Usage',
-        'Asset Status',
-        'Action',
-      ]"
-      :from="table.from"
-      :to="table.to"
-      :total="table.total"
-      :search="search"
-      :entries="entries"
-      @search="search = $event"
-      @update:entries="entries = $event"
-    >
-      <template #top-actions>
-        <div class="flex items-center gap-3">
-          <button
-            class="inline-flex items-center gap-2 rounded-lg border border-success bg-success px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-success/90"
-            @click="exportExcel"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 16V4m0 12l-4-4m4 4l4-4M4 20h16"
-              />
-            </svg>
-
-            Export Excel
-          </button>
-
-          <button
-            class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-primary/90"
-            @click="openPrintLabelModal"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 9V2h12v7M6 18H5a2 2 0 01-2-2v-4a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2h-1M6 14h12v8H6v-8z"
-              />
-            </svg>
-
-            Print Label
-          </button>
+    <!-- 1. Statistic Tracker Cards (Desain Selaras License & Consumable) -->
+    <div class="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <!-- Total Asset -->
+      <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex items-center">
+        <div class="p-3 rounded-lg bg-blue-50 text-blue-600 mr-4">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+            />
+          </svg>
         </div>
-      </template>
-      <!-- FILTER -->
-      <template #right-actions>
-        <div class="flex items-center gap-3">
-          <select
-            v-model="filters.category"
-            class="rounded border border-stroke bg-transparent px-3 py-2 text-sm outline-none focus:border-primary"
-          >
-            <option value="">All Category</option>
-
-            <option v-for="category in categories" :key="category.id" :value="category.id">
-              {{ category.name }}
-            </option>
-          </select>
-
-          <select
-            v-model="filters.usage"
-            class="rounded border border-stroke bg-transparent px-3 py-2 text-sm outline-none focus:border-primary"
-          >
-            <option value="">All Usage</option>
-
-            <option
-              v-for="usage in usageStatuses"
-              :key="usage.code || usage.value || usage.id"
-              :value="usage.code || usage.value || usage.id"
-            >
-              {{ usage.name || usage.label }}
-            </option>
-          </select>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-gray-500">Total Asset</p>
+          <p class="text-2xl font-bold text-gray-900">{{ statistics.total }}</p>
         </div>
-      </template>
+      </div>
 
-      <TableLoading v-if="isFetching" :rows="8" :cols="9" />
+      <!-- Available -->
+      <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex items-center">
+        <div class="p-3 rounded-lg bg-emerald-50 text-emerald-600 mr-4">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </div>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-gray-500">Available</p>
+          <p class="text-2xl font-bold text-emerald-600">{{ statistics.available }}</p>
+        </div>
+      </div>
 
-      <tr
-        v-else
-        v-for="item in table.data"
-        :key="item.id"
-        class="border-b border-stroke hover:bg-gray-50"
+      <!-- Assigned -->
+      <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex items-center">
+        <div class="p-3 rounded-lg bg-indigo-50 text-indigo-600 mr-4">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            />
+          </svg>
+        </div>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-gray-500">Assigned</p>
+          <p class="text-2xl font-bold text-indigo-600">{{ statistics.assigned }}</p>
+        </div>
+      </div>
+
+      <!-- Maintenance -->
+      <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex items-center">
+        <div class="p-3 rounded-lg bg-amber-50 text-amber-600 mr-4">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+            />
+          </svg>
+        </div>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-gray-500">Maintenance</p>
+          <p class="text-2xl font-bold text-amber-600">{{ statistics.maintenance }}</p>
+        </div>
+      </div>
+
+      <!-- Disposed -->
+      <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex items-center">
+        <div class="p-3 rounded-lg bg-rose-50 text-rose-600 mr-4">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+            />
+          </svg>
+        </div>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-gray-500">Disposed</p>
+          <p class="text-2xl font-bold text-rose-600">{{ statistics.disposed }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Data Table Wrapper -->
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden p-4">
+      <DataTable
+        :headers="[
+          '',
+          'Asset Code',
+          'Asset Name',
+          'Category',
+          'Type',
+          'Branch',
+          'Location',
+          'Usage',
+          'Asset Status',
+          'Action',
+        ]"
+        :from="table.from"
+        :to="table.to"
+        :total="table.total"
+        :search="search"
+        :entries="entries"
+        @search="search = $event"
+        @update:entries="entries = $event"
       >
-        <td class="px-4 py-4 text-center">
-          <input
-            type="checkbox"
-            :value="item.id"
-            v-model="selectedIds"
-            class="h-4 w-4 rounded border-stroke text-primary focus:ring-primary"
-          />
-        </td>
-        <td class="border-r px-4 py-4 font-semibold text-primary">
-          {{ item.asset.code }}
-        </td>
+        <!-- Top Actions (Export Excel & Print Label) -->
+        <template #top-actions>
+          <div class="flex items-center gap-3">
+            <button
+              class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-emerald-700"
+              @click="exportExcel"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 16V4m0 12l-4-4m4 4l4-4M4 20h16"
+                />
+              </svg>
+              Export Excel
+            </button>
 
-        <td class="border-r px-4 py-4">
-          <div class="font-semibold">
-            {{ item.asset.name }}
+            <button
+              class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700"
+              @click="openPrintLabelModal"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 9V2h12v7M6 18H5a2 2 0 01-2-2v-4a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2h-1M6 14h12v8H6v-8z"
+                />
+              </svg>
+              Print Label
+            </button>
           </div>
+        </template>
 
-          <div class="text-xs text-gray-500">
-            {{ item.asset.serial_number || '-' }}
+        <!-- Right Actions (Filters) -->
+        <template #right-actions>
+          <div class="flex items-center gap-3">
+            <select
+              v-model="filters.category"
+              class="py-2 px-3 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">All Category</option>
+              <option v-for="category in categories" :key="category.id" :value="category.id">
+                {{ category.name }}
+              </option>
+            </select>
+
+            <select
+              v-model="filters.usage"
+              class="py-2 px-3 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">All Usage</option>
+              <option
+                v-for="usage in usageStatuses"
+                :key="usage.code || usage.value || usage.id"
+                :value="usage.code || usage.value || usage.id"
+              >
+                {{ usage.name || usage.label }}
+              </option>
+            </select>
           </div>
-        </td>
+        </template>
 
-        <td class="border-r px-4 py-4">
-          {{ item.category?.name || '-' }}
-        </td>
+        <!-- Table Loading -->
+        <TableLoading v-if="isFetching" :rows="8" :cols="10" />
 
-        <td class="border-r px-4 py-4">
-          {{ item.type?.name || '-' }}
-        </td>
+        <!-- Table Rows -->
+        <tr
+          v-else
+          v-for="item in table.data"
+          :key="item.id"
+          class="border-b border-gray-200 hover:bg-gray-50/80 transition-colors"
+        >
+          <td class="px-4 py-4 text-center">
+            <input
+              type="checkbox"
+              :value="item.id"
+              v-model="selectedIds"
+              class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+          </td>
+          <td class="px-4 py-4 font-mono font-medium text-blue-600">
+            {{ item.asset.code }}
+          </td>
 
-        <td class="border-r px-4 py-4">{{ item.branch?.code || '-' }}</td>
+          <td class="px-4 py-4">
+            <div class="font-semibold text-gray-900">
+              {{ item.asset.name }}
+            </div>
+            <div class="text-xs text-gray-400 font-mono">
+              {{ item.asset.serial_number || '-' }}
+            </div>
+          </td>
 
-        <td class="border-r px-4 py-4">
-          {{ item.location?.name || '-' }}
-        </td>
+          <td class="px-4 py-4 text-gray-700">
+            {{ item.category?.name || '-' }}
+          </td>
 
-        <td class="border-r px-4 py-4 text-center">
-          <UsageStatusBadge :usage="item.usage" />
-        </td>
+          <td class="px-4 py-4 text-gray-700">
+            {{ item.type?.name || '-' }}
+          </td>
 
-        <td class="border-r px-4 py-4 text-center">
-          <StatusBadge :status="item.status" />
-        </td>
+          <td class="px-4 py-4 text-gray-700 font-medium">
+            {{ item.branch?.code || '-' }}
+          </td>
 
-        <td class="px-4 py-4 text-center">
-          <TableAction show-view @view="openDetail(item.id)" />
-        </td>
-      </tr>
+          <td class="px-4 py-4 text-gray-700">
+            {{ item.location?.name || '-' }}
+          </td>
 
-      <TableEmpty v-if="!isFetching && table.data.length === 0" :colspan="9" />
+          <td class="px-4 py-4 text-center">
+            <UsageStatusBadge :usage="item.usage" />
+          </td>
 
-      <template #pagination>
-        <Pagination :links="table.links" @change-page="fetchAssets" />
-      </template>
-    </DataTable>
+          <td class="px-4 py-4 text-center">
+            <StatusBadge :status="item.status" />
+          </td>
 
+          <td class="px-4 py-4 text-center">
+            <TableAction show-view @view="openDetail(item.id)" />
+          </td>
+        </tr>
+
+        <!-- Table Empty -->
+        <TableEmpty v-if="!isFetching && table.data.length === 0" :colspan="10" />
+
+        <!-- Pagination -->
+        <template #pagination>
+          <Pagination :links="table.links" @change-page="fetchAssets" />
+        </template>
+      </DataTable>
+    </div>
+
+    <!-- Modals -->
     <DetailAssetModal
       :show="showDetailModal"
       :asset="selectedAsset"
@@ -297,13 +387,11 @@ const printLabels = async (payload) => {
   try {
     const token = localStorage.getItem('token')
 
-    // Siapkan body request
     const requestData = {
       paper_size: payload.paper_size,
       category: filters.value.category,
       usage: filters.value.usage,
       search: search.value,
-      // Kirim selected_ids HANYA jika scope 'SELECTED'
       selected_ids: payload.print_scope === 'SELECTED' ? selectedIds.value : [],
     }
 
@@ -311,10 +399,9 @@ const printLabels = async (payload) => {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      responseType: 'blob', // Penting agar file PDF diterima sebagai Blob
+      responseType: 'blob',
     })
 
-    // Buat Blob URL dan buka PDF di Tab Baru
     const file = new Blob([response.data], { type: 'application/pdf' })
     const fileURL = URL.createObjectURL(file)
     window.open(fileURL, '_blank')

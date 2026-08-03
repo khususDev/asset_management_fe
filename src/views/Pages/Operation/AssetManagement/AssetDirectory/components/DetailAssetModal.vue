@@ -285,13 +285,23 @@ const formatDate = (date) => {
 watch(
   () => props.asset,
   async (asset) => {
-    if (!asset?.asset?.qr_code) return
+    // 1. Reset QR Image terlebih dahulu agar tidak menyimpan cache QR dari aset sebelumnya
+    qrImage.value = ''
 
-    qrImage.value = await QRCode.toDataURL(asset.asset.qr_code, {
-      width: 220,
-      margin: 1,
-    })
+    // 2. Ambil data string QR (Fallback ke asset.code jika qr_code null/kosong)
+    const qrText = asset?.asset?.qr_code || asset?.asset?.code
+
+    if (!qrText) return
+
+    try {
+      qrImage.value = await QRCode.toDataURL(qrText, {
+        width: 220,
+        margin: 1,
+      })
+    } catch (err) {
+      console.error('Gagal generate QR Code:', err)
+    }
   },
-  { immediate: true },
+  { immediate: true, deep: true },
 )
 </script>

@@ -1,6 +1,6 @@
 <script setup>
 const props = defineProps({
-  modelValue: [String, Number], // Bisa String atau Number
+  modelValue: [String, Number],
   label: String,
   type: { type: String, default: 'text' },
   placeholder: String,
@@ -8,7 +8,16 @@ const props = defineProps({
   disabled: Boolean,
   format: {
     type: String,
-    default: null, // Pilihan: 'uppercase', 'capitalize', 'number'
+    default: null,
+  },
+  // --- Tambahan Prop Baru ---
+  isTextarea: {
+    type: Boolean,
+    default: false,
+  },
+  rows: {
+    type: [Number, String],
+    default: 3,
   },
 })
 
@@ -55,11 +64,26 @@ const handleKeyDown = (event) => {
 
 <template>
   <div>
-    <label class="mb-1 block text-sm font-medium text-black dark:text-white">
+    <label v-if="label" class="mb-1 block text-sm font-medium text-black dark:text-white">
       {{ label }}
     </label>
 
+    <!-- Jika isTextarea true -->
+    <textarea
+      v-if="isTextarea"
+      :value="modelValue"
+      :placeholder="placeholder"
+      :disabled="disabled"
+      :rows="rows"
+      @keydown="handleKeyDown"
+      @input="handleInput"
+      class="w-full rounded border border-stroke bg-transparent py-2 px-3 text-sm outline-none transition focus:border-primary disabled:cursor-not-allowed disabled:bg-gray-2 dark:border-strokedark dark:bg-form-input dark:focus:border-primary dark:disabled:bg-meta-4"
+      :class="{ 'border-danger': error }"
+    ></textarea>
+
+    <!-- Jika Input Biasa -->
     <input
+      v-else
       :type="type"
       :value="modelValue"
       :placeholder="placeholder"

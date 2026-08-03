@@ -1,10 +1,10 @@
 <template>
   <div class="mx-auto max-w-screen-2xl">
-    <Breadcrumb pageTitle="Technical Settings" :crumbs="['Administration', 'System Settings']" />
+    <PageTitle title="Application Settings" />
 
     <div v-if="isPageLoading" class="flex flex-col items-center justify-center py-20">
       <div class="animate-spin rounded-full h-10 w-10 border-b-4 border-primary mb-4"></div>
-      <p class="text-sm text-gray-500 font-medium">Loading technical settings...</p>
+      <p class="text-sm text-gray-500 font-medium">Loading application settings...</p>
     </div>
 
     <div v-else>
@@ -227,8 +227,7 @@ import { ref, onMounted } from 'vue'
 import apiClient from '@/api/axios'
 import { useSettingStore } from '@/stores/setting'
 import ConfirmModal from '@/Components/modal/ConfirmModal.vue'
-
-import Breadcrumb from '@/Components/Page/Breadcrumb.vue'
+import PageTitle from '@/Components/common/PageTitle.vue'
 import FormInput from '@/Components/Form/FormInput.vue'
 import FileUpload from '@/Components/Form/FileUpload.vue'
 import { useToastStore } from '@/stores/toast' // Store global

@@ -1,5 +1,5 @@
 export const menuData = [
-  // ---------------- GRUP 1 ----------------
+  // ---------------- GRUP 1: MAIN MENU ----------------
   {
     groupName: 'Main Menu',
     menus: [
@@ -7,11 +7,13 @@ export const menuData = [
         label: 'Dashboard',
         routeName: 'Dashboard',
         roles: ['superadmin', 'admin', 'user'],
-        icon: 'analytics',
+        icon: 'lucide:layout-dashboard', // Icon Dashboard Modern
         submenus: [],
       },
     ],
   },
+
+  // ---------------- GRUP 2: DATA REFERENCE ----------------
   {
     groupName: 'Data Reference',
     menus: [
@@ -19,7 +21,7 @@ export const menuData = [
         label: 'Master Data',
         routeName: null,
         roles: ['superadmin', 'admin_gudang'],
-        icon: 'tables',
+        icon: 'lucide:database', // Icon Database Master Data
         submenus: [
           {
             label: 'Organization',
@@ -137,12 +139,7 @@ export const menuData = [
                 roles: ['superadmin', 'admin'],
                 submenus: [],
               },
-              {
-                label: 'Tax',
-                routeName: 'prc_tax',
-                roles: ['superadmin', 'admin'],
-                submenus: [],
-              },
+              { label: 'Tax', routeName: 'prc_tax', roles: ['superadmin', 'admin'], submenus: [] },
             ],
           },
           {
@@ -168,7 +165,8 @@ export const menuData = [
       },
     ],
   },
-  // ---------------- ASSET ACQUISITION ----------------
+
+  // ---------------- GRUP 3: ASSET ACQUISITION ----------------
   {
     groupName: 'Asset Acquisition',
     menus: [
@@ -176,6 +174,7 @@ export const menuData = [
         label: 'Procurement',
         routeName: null,
         roles: ['superadmin', 'admin', 'director', 'manager'],
+        icon: 'lucide:shopping-cart', // Icon Pengadaan
         submenus: [
           {
             label: 'Purchase Request',
@@ -205,23 +204,26 @@ export const menuData = [
       },
     ],
   },
+
+  // ---------------- GRUP 4: ASSET MANAGEMENT ----------------
   {
     groupName: 'Asset Management',
     menus: [
       {
-        label: 'Registration',
+        label: 'Asset Registration',
         routeName: 'opt_asset_registration',
         roles: ['superadmin', 'admin', 'director', 'manager'],
+        icon: 'lucide:file-plus', // Icon Pendaftaran Aset
         submenus: [],
       },
-      // ---------------- ASSET OPERATIONS ----------------
       {
-        label: 'Operations',
+        label: 'Asset Operations',
         routeName: null,
         roles: ['superadmin', 'admin', 'director', 'manager'],
+        icon: 'lucide:box', // Icon Operasional Aset
         submenus: [
           {
-            label: 'Assets Directory',
+            label: 'Fixed Assets Directory',
             routeName: 'opt_asset_directory',
             roles: ['superadmin', 'admin', 'director', 'manager'],
             submenus: [],
@@ -233,7 +235,7 @@ export const menuData = [
             submenus: [],
           },
           {
-            label: 'Movement',
+            label: 'Asset Relocation',
             routeName: 'opt_asset_movement',
             roles: ['superadmin', 'admin', 'director', 'manager'],
             submenus: [],
@@ -242,140 +244,90 @@ export const menuData = [
             label: 'Maintenance',
             routeName: 'maintenance',
             roles: ['superadmin', 'admin', 'user'],
-            icon: 'analytics',
             submenus: [],
           },
           {
-            label: 'Disposal',
+            label: 'Asset Disposal',
             routeName: 'opt_asset_disposal',
             roles: ['superadmin', 'admin', 'director', 'manager'],
             submenus: [],
           },
         ],
       },
-      // ---------------- ASSET COMPLIANCE ----------------
       {
         label: 'Compliance',
         routeName: null,
         roles: ['superadmin', 'admin', 'director', 'manager'],
+        icon: 'lucide:shield-check', // Icon Kepatuhan & Audit
         submenus: [
           {
-            label: 'License Registry',
-            routeName: 'a&l_license_registry',
+            label: 'Software Licenses',
+            routeName: 'software_licenses',
             roles: ['superadmin', 'admin', 'director', 'manager'],
             submenus: [],
           },
           {
             label: 'Contract & Leases',
-            routeName: 'a&l_contract_leases',
+            routeName: 'contract_leases',
             roles: ['superadmin', 'admin', 'director', 'manager'],
             submenus: [],
           },
           {
             label: 'Warranty',
-            routeName: 'a&l_warranty',
+            routeName: 'warranty',
             roles: ['superadmin', 'admin', 'director', 'manager'],
             submenus: [],
           },
           {
             label: 'Audit & Verification',
-            routeName: 'a&l_audit_verification',
+            routeName: 'audit_verification',
             roles: ['superadmin', 'admin', 'director', 'manager'],
             submenus: [],
           },
         ],
       },
-
-      // ---------------- INVENTORY ----------------
       {
         label: 'Inventory',
         routeName: null,
         roles: ['superadmin', 'admin', 'user'],
-        icon: 'product',
+        icon: 'lucide:boxes', // Icon Stok / Inventory
         submenus: [
           {
-            label: 'Consumable',
-            routeName: 'consumable',
+            label: 'Stock Consumable',
+            routeName: 'stock_consumable',
             roles: ['superadmin', 'admin', 'director', 'manager'],
             submenus: [],
           },
           {
-            label: 'Sparepart',
-            routeName: 'sparepart',
+            label: 'Stock Issue',
+            routeName: 'stock_issue',
             roles: ['superadmin', 'admin', 'director', 'manager'],
             submenus: [],
           },
           {
-            label: 'Stock',
-            routeName: null,
+            label: 'Stock Movement',
+            routeName: 'stock_movement',
             roles: ['superadmin', 'admin', 'director', 'manager'],
-            submenus: [
-              {
-                label: 'Movement',
-                routeName: 'stock_movement',
-                roles: ['superadmin', 'admin', 'director', 'manager'],
-                submenus: [],
-              },
-              {
-                label: 'Opname',
-                routeName: 'stock_opname',
-                roles: ['superadmin', 'admin', 'director', 'manager'],
-                submenus: [],
-              },
-              {
-                label: 'Adjustment',
-                routeName: 'stock_adjustment',
-                roles: ['superadmin', 'admin', 'director', 'manager'],
-                submenus: [],
-              },
-            ],
+            submenus: [],
+          },
+          {
+            label: 'Stock Opname',
+            routeName: 'stock_opname',
+            roles: ['superadmin', 'admin', 'director', 'manager'],
+            submenus: [],
+          },
+          {
+            label: 'Adjustment',
+            routeName: 'stock_adjustment',
+            roles: ['superadmin', 'admin', 'director', 'manager'],
+            submenus: [],
           },
         ],
       },
-
-      // ---------------- REPORTS ----------------
-      // {
-      //   label: 'Reports',
-      //   routeName: null,
-      //   roles: ['superadmin', 'admin', 'user'],
-      //   icon: 'report',
-      //   submenus: [
-      //     {
-      //       label: 'Asset Reports',
-      //       routeName: 'rpt_asset',
-      //       roles: ['superadmin', 'admin', 'director', 'manager'],
-      //       submenus: [],
-      //     },
-      //     {
-      //       label: 'License Reports',
-      //       routeName: 'rpt_license',
-      //       roles: ['superadmin', 'admin', 'director', 'manager'],
-      //       submenus: [],
-      //     },
-      //     {
-      //       label: 'Procurement Reports',
-      //       routeName: 'rpt_procurement',
-      //       roles: ['superadmin', 'admin', 'director', 'manager'],
-      //       submenus: [],
-      //     },
-      //     {
-      //       label: 'Maintenance Reports',
-      //       routeName: 'rpt_maintenance',
-      //       roles: ['superadmin', 'admin', 'director', 'manager'],
-      //       submenus: [],
-      //     },
-      //     {
-      //       label: 'Inventory Reports',
-      //       routeName: 'rpt_inventory',
-      //       roles: ['superadmin', 'admin', 'director', 'manager'],
-      //       submenus: [],
-      //     },
-      //   ],
-      // },
     ],
   },
 
-  // ---------------- WORKFLOW ----------------
+  // ---------------- GRUP 5: WORKFLOW ----------------
   {
     groupName: 'Workflow',
     menus: [
@@ -383,7 +335,7 @@ export const menuData = [
         label: 'Approvals',
         routeName: null,
         roles: ['superadmin', 'admin', 'user', 'it manager', 'director', 'finance manager'],
-        icon: 'approval',
+        icon: 'lucide:check-square', // Icon Persetujuan
         submenus: [
           {
             label: 'Waiting Approval',
@@ -414,6 +366,7 @@ export const menuData = [
     ],
   },
 
+  // ---------------- GRUP 6: ADMINISTRATION ----------------
   {
     groupName: 'Administration',
     menus: [
@@ -421,7 +374,7 @@ export const menuData = [
         label: 'User Management',
         routeName: null,
         roles: ['superadmin', 'admin_gudang'],
-        icon: 'users',
+        icon: 'lucide:users', // Icon User Management
         submenus: [
           {
             label: 'Users Account',
@@ -443,12 +396,11 @@ export const menuData = [
           },
         ],
       },
-
       {
         label: 'System Settings',
         routeName: null,
         roles: ['superadmin', 'admin_gudang'],
-        icon: 'setting',
+        icon: 'lucide:settings', // Icon System Settings
         submenus: [
           {
             label: 'Technical Settings',
@@ -484,6 +436,4 @@ export const menuData = [
       },
     ],
   },
-
-  // Tambahkan Grup 4, 5, 6, dst di bawah sini...
 ]

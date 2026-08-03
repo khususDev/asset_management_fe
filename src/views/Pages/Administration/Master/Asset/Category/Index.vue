@@ -1,12 +1,9 @@
 <template>
   <div class="mx-auto max-w-screen-2xl">
-    <Breadcrumb
-      pageTitle="Asset Categories"
-      :crumbs="['Administration', 'Asset Master', 'Categories']"
-    />
+    <PageTitle title="Master Asset Categories" />
 
     <DataTable
-      :headers="['Code', 'Category Name', 'Description', 'Status', 'Action']"
+      :headers="['Code', 'Categories Name', 'Description', 'Status', 'Action']"
       :from="categoriesData.from"
       :to="categoriesData.to"
       :total="categoriesData.total"
@@ -20,7 +17,7 @@
           @click="openCreate"
           class="rounded bg-primary py-2 px-4 text-sm font-medium text-white hover:bg-opacity-90"
         >
-          Tambah Kategori
+          Create Category
         </button>
       </template>
 
@@ -55,7 +52,11 @@
         <td
           class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark"
         >
-          <TableAction @edit="openEdit(category)" @delete="openDelete(category.id)" />
+          <TableAction
+            show-edit-delete
+            @edit="openEdit(category)"
+            @delete="openDelete(category.id)"
+          />
         </td>
       </tr>
 
@@ -87,7 +88,7 @@
         <FormInput
           label="Category Name"
           v-model="form.name"
-          format="title"
+          format="uppercase"
           :error="errors?.name ? errors.name[0] : null"
           placeholder="e.g., IT Equipment, Kendaraan"
         />
@@ -134,12 +135,10 @@
 </template>
 
 <script setup>
-import { API_BASE_URL, API_ENDPOINTS } from '@/api/endpoints'
-
+import { API_ENDPOINTS } from '@/api/endpoints'
+import PageTitle from '@/Components/common/PageTitle.vue'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-
-import Breadcrumb from '@/Components/Page/Breadcrumb.vue'
 import DataTable from '@/Components/Table/DataTable.vue'
 import Pagination from '@/Components/Table/Pagination.vue'
 import TableAction from '@/Components/Table/TableAction.vue'

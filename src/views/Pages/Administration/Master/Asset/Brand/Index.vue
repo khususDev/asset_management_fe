@@ -1,6 +1,6 @@
 <template>
   <div class="mx-auto max-w-screen-2xl">
-    <Breadcrumb pageTitle="Asset Brands" :crumbs="['Administration', 'Asset Master', 'Brands']" />
+    <PageTitle title="Master Asset Brands" />
 
     <DataTable
       :headers="['Code', 'Brand Name', 'Description', 'Status', 'Action']"
@@ -52,7 +52,7 @@
         <td
           class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark"
         >
-          <TableAction @edit="openEdit(brand)" @delete="openDelete(brand.id)" />
+          <TableAction show-edit-delete @edit="openEdit(brand)" @delete="openDelete(brand.id)" />
         </td>
       </tr>
 
@@ -127,12 +127,10 @@
 </template>
 
 <script setup>
-import { API_BASE_URL, API_ENDPOINTS } from '@/api/endpoints'
-
+import { API_ENDPOINTS } from '@/api/endpoints'
+import PageTitle from '@/Components/common/PageTitle.vue'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-
-import Breadcrumb from '@/Components/Page/Breadcrumb.vue'
 import DataTable from '@/Components/Table/DataTable.vue'
 import Pagination from '@/Components/Table/Pagination.vue'
 import TableAction from '@/Components/Table/TableAction.vue'
