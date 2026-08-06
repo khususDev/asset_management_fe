@@ -80,7 +80,7 @@
         <FormInput
           label="Brand Name"
           v-model="form.name"
-          format="title"
+          format="uppercase"
           :error="errors?.name ? errors.name[0] : null"
           placeholder="e.g., Lenovo, Toyota, Epson"
         />

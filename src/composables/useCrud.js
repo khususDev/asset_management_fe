@@ -27,7 +27,7 @@ export default function useCrud(config) {
     isEdit.value = true
     errors.value = {}
     selectedId.value = data.id
-
+    form.value.id = data.id
     // Copy data ke form
     Object.keys(config.initialForm).forEach((key) => {
       form.value[key] = data[key]

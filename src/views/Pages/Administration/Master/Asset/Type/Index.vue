@@ -91,7 +91,7 @@
         <FormInput
           label="Type Name"
           v-model="form.name"
-          format="title"
+          format="uppercase"
           :error="errors?.name ? errors.name[0] : null"
           placeholder="e.g., Laptop, Server, Mobil Penumpang"
         />
@@ -103,6 +103,7 @@
           <textarea
             v-model="form.description"
             rows="3"
+            format="capitalize"
             placeholder="Type details..."
             class="w-full rounded border-[1.5px] border-stroke bg-transparent py-2 px-4 font-medium outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
             :class="{ 'border-danger focus:border-danger': errors?.description }"

@@ -50,6 +50,7 @@ export const API_ENDPOINTS = {
   assetRegistrationMasters: '/opt_asset_registration/masters',
   optAssetDirectory: 'opt_asset_directory',
   optAssetDirectoryMasters: '/opt_asset_directory/masters',
+  optAssetAssignment: '/opt_asset_directory',
 
   mediaUpload: '/media/upload',
   databaseBackup: '/database/backup',

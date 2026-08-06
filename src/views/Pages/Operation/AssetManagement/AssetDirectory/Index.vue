@@ -250,11 +250,9 @@
             {{ item.asset.code }}
           </td>
 
-          <td class="px-4 py-4">
-            <div class="font-semibold text-gray-900">
+          <td class="max-w-md truncate px-4 py-4" :title="item.asset.name">
+            <div class="text-xs text-bold font-mono">
               {{ item.asset.name }}
-            </div>
-            <div class="text-xs text-gray-400 font-mono">
               {{ item.asset.serial_number || '-' }}
             </div>
           </td>
@@ -284,7 +282,12 @@
           </td>
 
           <td class="px-4 py-4 text-center">
-            <TableAction show-view @view="openDetail(item.id)" />
+            <TableAction
+              show-view
+              show-assign
+              @view="openDetail(item.id)"
+              @assign="handleOpenAssignModal(item)"
+            />
           </td>
         </tr>
 
@@ -297,6 +300,18 @@
         </template>
       </DataTable>
     </div>
+
+    <AssignAssetModal
+      :show="showAssignModal"
+      :asset="selectedAsset"
+      :users="userList"
+      :departments="departmentList"
+      :locations="locationList"
+      :loading="isSubmittingAssign"
+      :errors="assignErrors"
+      @close="showAssignModal = false"
+      @submit="submitAssignAsset"
+    />
 
     <!-- Modals -->
     <DetailAssetModal
@@ -319,7 +334,6 @@
 import { API_ENDPOINTS } from '@/api/endpoints'
 import axios from 'axios'
 import { ref, onMounted, watch } from 'vue'
-import Breadcrumb from '@/Components/Page/Breadcrumb.vue'
 import DataTable from '@/Components/Table/DataTable.vue'
 import Pagination from '@/Components/Table/Pagination.vue'
 import TableAction from '@/Components/Table/TableAction.vue'
@@ -330,18 +344,73 @@ import UsageStatusBadge from '@/components/Badge/UsageStatusBadge.vue'
 import useTable from '@/Composables/useTable'
 import DetailAssetModal from './components/DetailAssetModal.vue'
 import PrintLabelModal from './components/PrintLabelModal.vue'
+import AssignAssetModal from './components/AssignAssetModal.vue'
 
 const isGlobalLoading = ref(false)
 const isFetching = ref(false)
 const showDetailModal = ref(false)
-const selectedAsset = ref(null)
 
 const apiUrl = API_ENDPOINTS.optAssetDirectory
 const apiMasters = API_ENDPOINTS.optAssetDirectoryMasters
+const apiAssign = API_ENDPOINTS.optAssetAssignment
 
 const showPrintLabelModal = ref(false)
 const selectedIds = ref([])
 const selectAll = ref(false)
+
+// State Assignment Modal
+const showAssignModal = ref(false)
+const selectedAsset = ref(null)
+const isSubmittingAssign = ref(false)
+const assignErrors = ref({})
+
+// Data Dropdowns
+const userList = ref([])
+const departmentList = ref([])
+const locationList = ref([])
+
+// Handler Buka Modal
+const handleOpenAssignModal = (asset) => {
+  selectedAsset.value = asset
+  assignErrors.value = {}
+  showAssignModal.value = true
+}
+
+// 🛠️ PERBAIKAN: Handler Submit ke API Laravel
+const submitAssignAsset = async (formData) => {
+  isSubmittingAssign.value = true
+  assignErrors.value = {}
+
+  try {
+    const token = localStorage.getItem('token')
+
+    // Menggunakan variabel apiAssign + asset_id + /assign dan Authorization Header
+    await axios.post(`${apiAssign}/${formData.asset_id}/assign`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    showAssignModal.value = false
+    fetchAssets() // Refresh data tabel aset
+  } catch (error) {
+    if (error.response && error.response.status === 422) {
+      // Error validasi form (misal: field wajib diisi)
+      assignErrors.value = error.response.data.errors
+    } else {
+      // Error server (500, Database, Route, dll)
+      const errorMessage =
+        error.response?.data?.message || 'Terjadi kesalahan sistem saat memproses assignment.'
+
+      // 🛠️ Tampilkan feedback ke UI (Ganti dengan Toast library proyek Anda jika ada)
+      alert(errorMessage)
+
+      console.error('Gagal assign aset:', error)
+    }
+  } finally {
+    isSubmittingAssign.value = false
+  }
+}
 
 const table = ref({
   data: [],
@@ -429,21 +498,25 @@ const filters = ref({
 const fetchMasters = async () => {
   try {
     const token = localStorage.getItem('token')
-
     const response = await axios.get(apiMasters, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     })
 
-    categories.value = response.data.data.categories
-    types.value = response.data.data.types
-    brands.value = response.data.data.brands
-    statuses.value = response.data.data.statuses
-    branches.value = response.data.data.branches
-    locations.value = response.data.data.locations
-    vendors.value = response.data.data.vendors
-    usageStatuses.value = response.data.data.usage_statuses
+    const masterData = response.data.data
+
+    categories.value = masterData.categories
+    types.value = masterData.types
+    brands.value = masterData.brands
+    statuses.value = masterData.statuses
+    branches.value = masterData.branches
+    locations.value = masterData.locations
+    vendors.value = masterData.vendors
+    usageStatuses.value = masterData.usage_statuses
+
+    // Pemataan data dropdown untuk modal assignment
+    userList.value = masterData.users || []
+    departmentList.value = masterData.departments || []
+    locationList.value = masterData.locations || []
   } catch (error) {
     console.error(error)
   }

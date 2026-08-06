@@ -200,6 +200,7 @@ const {
   confirmDelete,
 } = useCrud({
   initialForm: {
+    id: null,
     code: '',
     name: '',
     description: '',

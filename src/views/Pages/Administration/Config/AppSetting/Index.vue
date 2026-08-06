@@ -363,7 +363,7 @@ const generateBackup = async () => {
   startProgress()
 
   try {
-    const res = await axios.post(API_ENDPOINTS.databaseBackup)
+    const res = await apiClient.post(API_ENDPOINTS.databaseBackup)
 
     if (res.data.success) {
       clearInterval(progressInterval)
